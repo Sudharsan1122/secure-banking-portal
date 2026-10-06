@@ -1,0 +1,53 @@
+================================================================================
+BURP SUITE EVIDENCE ITEM 05: SLIDING-WINDOW RATE LIMIT & EXPONENTIAL LOCKOUT
+================================================================================
+Vulnerability: Brute-Force Credential Attack (OWASP A07:2021 - Identification & Auth Failures)
+Target Endpoint: POST /api/login.php
+Tool: Burp Suite Intruder / Repeater
+Attack Vector: High-Frequency Automated Dictionary Fuzzing
+Defensive Controls:
+  1. Centralized Sliding-Window IP/Endpoint Limiter (5 requests / 15 minutes)
+  2. 3-Tier Exponential Account Lockout (5 min -> 30 min -> Permanent Admin Lock)
+  3. HTTP 429 Too Many Requests with Retry-After Header
+
+--------------------------------------------------------------------------------
+RAW HTTP REQUEST (6th Consecutive Failed Attempt via Burp Repeater):
+--------------------------------------------------------------------------------
+POST /api/login.php HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Gecko/20100101
+Accept: application/json
+Content-Type: application/json
+Origin: http://127.0.0.1:8080
+Referer: http://127.0.0.1:8080/frontend/login.html
+Content-Length: 53
+Connection: close
+
+{"username":"john_doe","password":"IncorrectPassword6"}
+
+--------------------------------------------------------------------------------
+RAW HTTP RESPONSE (Server Defense):
+--------------------------------------------------------------------------------
+HTTP/1.1 429 Too Many Requests
+Date: Wed, 23 Sep 2026 04:19:15 GMT
+Server: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+Retry-After: 300
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-3d4e5f6a7b8c9d0e1f2a3b4c'; style-src 'self' 'nonce-3d4e5f6a7b8c9d0e1f2a3b4c'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+Content-Type: application/json; charset=UTF-8
+Connection: close
+Content-Length: 132
+
+{"status":"error","code":429,"message":"Account temporarily locked due to multiple failed login attempts. Please retry in 5 minutes."}
+
+--------------------------------------------------------------------------------
+PROGRESSIVE LOCKOUT TIERS OBSERVED DURING INTRUDER RUN:
+--------------------------------------------------------------------------------
+- Attempts 1 to 4: HTTP 401 Unauthorized ("Invalid credentials.")
+- Attempt 5: Account transitions to Tier 1 Lockout (5 minutes). HTTP 429 emitted. Retry-After: 300.
+- Attempt 10: Account transitions to Tier 2 Lockout (30 minutes). HTTP 429 emitted. Retry-After: 1800.
+- Attempt 15: Account transitions to Tier 3 Permanent Lockout (`status = 'frozen'`).
+  Subsequent requests return HTTP 429: "Account permanently locked. Administrative unlock required."
+- SIEM Event: BRUTE_FORCE_LOCKOUT logged with severity 'critical'.

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adversary Exploit PoC: Cross-Site Request Forgery (CSRF)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0F172A;
+            color: #F8FAFC;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        h1 { color: #EF4444; margin-top: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 8px; }
+        .badge { background: #7F1D1D; color: #FCA5A5; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .scenario-box { background: #0F172A; border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 4px; margin: 1.5rem 0; font-size: 0.9rem; }
+        .code-box { background: #020617; border: 1px solid #1E293B; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; color: #38BDF8; overflow-x: auto; margin: 1rem 0; }
+        .btn { background: #DC2626; color: #FFFFFF; border: none; padding: 10px 20px; font-weight: 700; border-radius: 6px; cursor: pointer; font-size: 0.95rem; }
+        .btn:hover { background: #B91C1C; }
+        .result-box { margin-top: 1.5rem; padding: 1rem; border-radius: 6px; display: none; font-family: monospace; font-size: 0.85rem; }
+        .result-blocked { background: #064E3B; border: 1px solid #059669; color: #A7F3D0; display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Adversary PoC: Cross-Site Request Forgery (CSRF) <span class="badge">ATTACK SIMULATION</span></h1>
+        
+        <div class="scenario-box">
+            <strong>Attack Vector Scenario:</strong><br>
+            A victim customer has an active authenticated session at <code>http://127.0.0.1:8080/</code>.<br>
+            The victim is enticed to open this malicious external page (hosted on an untrusted origin).<br>
+            This script silently attempts to execute an unauthorized transfer of <strong>$5,000.00</strong> to an attacker-controlled account.
+        </div>
+
+        <h3>Attacker Payload:</h3>
+        <div class="code-box">
+POST /api/transfer.php HTTP/1.1<br>
+Host: 127.0.0.1:8080<br>
+Origin: http://evil-attacker-site.com<br>
+Content-Type: application/json<br>
+Cookie: PHPSESSID=&lt;victim's ambient session cookie&gt;<br><br>
+{"source_account_id": 1, "target_account": "ACC-ATTACKER-999", "amount": 5000.00, "remark": "Silent Drain"}
+        </div>
+
+        <button class="btn" id="launchAttackBtn">🚀 Launch CSRF Transfer Attempt</button>
+
+        <div id="resultBox" class="result-box"></div>
+
+        <h3 style="margin-top: 2rem; color: #10B981;">🛡️ Why This Attack Fails (SecureBank Mitigation):</h3>
+        <ol style="font-size: 0.9rem; color: #94A3B8;">
+            <li><strong>Synchronizer Token Pattern:</strong> The state-changing endpoint strictly requires a valid <code>X-CSRF-Token</code> header. Cross-origin requests cannot access or read the victim's CSRF token due to Same-Origin Policy (SOP).</li>
+            <li><strong>SameSite=Strict Cookies:</strong> The session cookie carries <code>SameSite=Strict</code>, preventing the browser from automatically sending the ambient authentication cookie on cross-site requests.</li>
+            <li><strong>Outcome:</strong> Request is intercepted server-side with <strong>HTTP 403 Forbidden</strong> and logged to the SOC SIEM with 'high' severity.</li>
+        </ol>
+    </div>
+
+    <script>
+        document.getElementById('launchAttackBtn').addEventListener('click', async () => {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.className = 'result-box';
+            resultBox.textContent = 'Transmitting forged cross-origin request to http://127.0.0.1:8080/api/transfer.php...';
+            resultBox.style.display = 'block';
+
+            try {
+                const response = await fetch('http://127.0.0.1:8080/api/transfer.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // Intentionally omitting X-CSRF-Token (attacker cannot read it)
+                    },
+                    body: JSON.stringify({
+                        source_account_id: 1,
+                        target_account: 'ACC-ATTACKER-999',
+                        amount: 5000.00,
+                        remark: 'CSRF Exploit'
+                    })
+                });
+
+                const data = await response.json();
+                resultBox.className = 'result-box result-blocked';
+                resultBox.innerHTML = `<strong>[EXPLOIT MITIGATED]</strong><br>` +
+                    `HTTP Status: ${response.status} ${response.statusText}<br>` +
+                    `Server Response: ${JSON.stringify(data, null, 2)}<br><br>` +
+                    `✓ Zero funds transferred. Attack successfully intercepted by CSRF token validator!`;
+            } catch (err) {
+                resultBox.className = 'result-box result-blocked';
+                resultBox.innerHTML = `<strong>[EXPLOIT BLOCKED BY BROWSER / CORS / CSP]</strong><br>` +
+                    `Error: ${err.message}<br>` +
+                    `The cross-origin request was completely denied by browser security policies and server headers.`;
+            }
+        });
+    </script>
+</body>
+</html>

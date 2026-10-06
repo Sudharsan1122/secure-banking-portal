@@ -1,0 +1,1601 @@
+/* ==========================================================================
+   SecureBank Design System — Pages (Pages.css)
+   Pillar E — Page-Specific Layouts & Compositions
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Split-Screen Auth Layout (Login, Register)
+   ========================================================================== */
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.auth-hero {
+  flex: 1.2;
+  background: linear-gradient(145deg, #071324 0%, #0B1F3A 40%, #1548CC 100%);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-12) var(--space-10);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle fintech vector grid overlay */
+.auth-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.08) 2%, transparent 0%),
+    radial-gradient(circle at 75px 75px, rgba(255, 255, 255, 0.05) 2%, transparent 0%);
+  background-size: 100px 100px;
+  pointer-events: none;
+}
+
+.auth-hero-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.auth-hero-body {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+}
+
+.auth-hero-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-4);
+  color: #FFFFFF;
+}
+
+.auth-hero-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #CBD5E1;
+  margin-bottom: var(--space-8);
+}
+
+.auth-hero-illustration {
+  width: 100%;
+  max-width: 380px;
+  margin: var(--space-6) 0;
+}
+
+.auth-trust-badges {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.trust-badge-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.8125rem;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.auth-form-side {
+  flex: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  background-color: var(--bg-surface);
+  position: relative;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card-header {
+  margin-bottom: var(--space-6);
+}
+
+.auth-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.auth-card-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.auth-footer {
+  margin-top: var(--space-6);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   2. Centered MFA Layout
+   ========================================================================== */
+.mfa-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background-color: var(--bg-page);
+}
+
+.mfa-card {
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.mfa-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background-color: rgba(30, 94, 255, 0.1);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4);
+}
+
+.otp-inputs {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  margin: var(--space-6) 0;
+}
+
+.otp-box {
+  width: 48px;
+  height: 56px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  font-family: var(--font-mono);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.otp-box:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px var(--color-secondary-subtle);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   3. Global App Shell & Navigation
+   ========================================================================== */
+.app-header {
+  position: sticky;
+  top: 0;
+  height: 64px;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-8);
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-normal);
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--text-primary);
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.app-nav-link {
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-nav-link:hover {
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.app-nav-link.active {
+  background-color: var(--color-secondary-subtle);
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.header-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.header-search input {
+  height: 36px;
+  padding: 0 12px 0 34px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-strong);
+  background-color: var(--bg-subtle);
+  font-size: 0.8125rem;
+  width: 200px;
+  color: var(--text-primary);
+  transition: width var(--transition-normal), border-color var(--transition-fast);
+}
+
+.header-search input:focus {
+  width: 260px;
+  outline: none;
+  border-color: var(--color-secondary);
+  background-color: var(--bg-surface);
+}
+
+.header-search .search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.header-search .kbd-badge {
+  position: absolute;
+  right: 8px;
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  background-color: var(--border-strong);
+  color: var(--text-muted);
+  padding: 2px 4px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.notification-btn {
+  position: relative;
+}
+
+.notification-badge-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-danger);
+  border: 2px solid var(--bg-surface);
+}
+
+.app-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: var(--space-8) var(--space-6);
+  flex: 1;
+}
+
+/* ==========================================================================
+   4. Dashboard Layout
+   ========================================================================== */
+.welcome-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.welcome-greeting {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.welcome-date {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Hero Balance Card */
+.balance-hero-card {
+  background: linear-gradient(135deg, #0B1F3A 0%, #153A68 55%, #1E5EFF 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  margin-bottom: var(--space-8);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(11, 31, 58, 0.4);
+}
+
+.balance-hero-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(30, 94, 255, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.balance-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+  position: relative;
+  z-index: 2;
+}
+
+.balance-label {
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94A3B8;
+  margin-bottom: var(--space-1);
+}
+
+.balance-amount {
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.balance-currency {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #94A3B8;
+}
+
+.balance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background-color: rgba(0, 184, 124, 0.2);
+  color: #22C55E;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: var(--space-2);
+}
+
+/* Sub-Accounts Inside Hero */
+.subaccounts-hero-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  z-index: 2;
+}
+
+.subaccount-pill {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.subaccount-pill-type {
+  font-size: 0.75rem;
+  color: #CBD5E1;
+}
+
+.subaccount-pill-amount {
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: #FFFFFF;
+  margin-top: 2px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-3);
+  position: relative;
+  z-index: 2;
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* Dashboard Analytics Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+/* ==========================================================================
+   5. Transfer Two-Column Layout
+   ========================================================================== */
+.transfer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.stepper-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+}
+
+.account-selector-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.account-radio-card {
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-color: var(--bg-surface);
+}
+
+.account-radio-card:hover {
+  border-color: var(--border-strong);
+}
+
+.account-radio-card.selected {
+  border-color: var(--color-secondary);
+  background-color: var(--color-secondary-subtle);
+}
+
+.limit-progress-bar {
+  height: 6px;
+  width: 100%;
+  background-color: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: var(--space-2);
+}
+
+.limit-progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--color-secondary);
+  transition: width 0.4s ease;
+}
+
+.limit-progress-fill.warning { background-color: var(--color-warning); }
+.limit-progress-fill.danger { background-color: var(--color-danger); }
+
+/* Quick Beneficiary Pick */
+.quick-payees-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.quick-payee-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.quick-payee-item:hover {
+  background-color: var(--bg-subtle);
+}
+
+/* ==========================================================================
+   6. Beneficiaries & Directory Grid
+   ========================================================================== */
+.beneficiary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+
+.beneficiary-card-add {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  min-height: 180px;
+}
+
+.beneficiary-card-add:hover {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+  background-color: var(--color-secondary-subtle);
+}
+
+/* ==========================================================================
+   7. Profile & Security Posture
+   ========================================================================== */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.score-gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-6) 0;
+}
+
+.circular-gauge {
+  width: 140px;
+  height: 140px;
+  transform: rotate(-90deg);
+}
+
+.gauge-bg {
+  fill: none;
+  stroke: var(--bg-subtle);
+  stroke-width: 10;
+}
+
+.gauge-progress {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.gauge-score-text {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   8. SOC Console Layout (admin/*) — Clean Fintech Light Architecture
+   ========================================================================== */
+.soc-body {
+  background-color: var(--bg-app) !important;
+  color: var(--text-primary) !important;
+  min-height: 100vh;
+}
+
+.soc-header {
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.soc-brand-text {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.soc-nav-link {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.soc-nav-link:hover {
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+.soc-nav-link.active {
+  background-color: var(--color-secondary-subtle);
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.soc-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.soc-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.soc-kpi-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+}
+
+.soc-kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  margin: var(--space-1) 0;
+}
+
+.soc-summary-box {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.badge-chain-intact {
+  background-color: #EFF6FF;
+  color: #1E5EFF;
+  border: 1px solid #BFDBFE;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge-chain-tampered {
+  background-color: #FEF2F2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.soc-kpi-card.alert-active {
+  border-color: rgba(229, 72, 77, 0.4);
+  box-shadow: 0 0 15px rgba(229, 72, 77, 0.15);
+}
+
+.severity-stacked-bar {
+  display: flex;
+  height: 12px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background-color: #E2E8F0;
+  margin: var(--space-4) 0;
+}
+
+.severity-bar-segment {
+  height: 100%;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.severity-bar-segment:hover {
+  opacity: 0.85;
+}
+
+.soc-feed-row-new {
+  animation: feedHighlight 1s ease;
+}
+
+@keyframes feedHighlight {
+  0%   { background-color: rgba(0, 184, 124, 0.25); }
+  100% { background-color: transparent; }
+}
+
+/* ==========================================================================
+   Executive Admin GUI Design System (Enterprise Fintech Standards)
+   ========================================================================== */
+.admin-shell {
+  min-height: 100vh;
+  background-color: var(--bg-app);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-topbar {
+  background: #FFFFFF;
+  border-bottom: 1px solid #E2E8F0;
+  height: 68px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.admin-topbar-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-logo-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1E5EFF 0%, #1548CC 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(30, 94, 255, 0.25);
+}
+
+.admin-brand-name {
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+}
+
+.admin-badge-soc {
+  background: #EFF6FF;
+  color: #1E5EFF;
+  border: 1px solid #BFDBFE;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.admin-nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-tab-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #475569;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.admin-tab-link:hover {
+  background-color: #F1F5F9;
+  color: #0F172A;
+}
+
+.admin-tab-link.active {
+  background-color: #EFF6FF;
+  color: #1E5EFF;
+  font-weight: 600;
+  border: 1px solid #BFDBFE;
+}
+
+.admin-tab-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.admin-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 9999px;
+}
+
+.admin-avatar-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1E5EFF 0%, #3B82F6 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Page Hero Header */
+.admin-page-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #64748B;
+  margin-bottom: 4px;
+}
+
+.admin-page-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.admin-page-desc {
+  font-size: 0.875rem;
+  color: #64748B;
+  margin: 4px 0 0;
+}
+
+.admin-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* KPI Card Grid */
+.admin-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-kpi-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  border-color: #CBD5E1;
+}
+
+.admin-kpi-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.admin-kpi-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748B;
+}
+
+.admin-kpi-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-kpi-val {
+  font-size: 2.125rem;
+  font-weight: 800;
+  color: #0F172A;
+  font-family: var(--font-mono);
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+}
+
+.admin-kpi-sub {
+  font-size: 0.8rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Cards & Containers */
+.admin-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  margin-bottom: 1.5rem;
+}
+
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.admin-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-card-subtitle {
+  font-size: 0.8125rem;
+  color: #64748B;
+  margin: 2px 0 0;
+}
+
+/* Filter & Search Toolbar */
+.admin-toolbar {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.admin-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+
+.admin-search-wrap svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  pointer-events: none;
+}
+
+.admin-search-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px 0 38px;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #0F172A;
+  transition: all 0.15s ease;
+}
+
+.admin-search-input:focus {
+  outline: none;
+  border-color: #1E5EFF;
+  box-shadow: 0 0 0 3px rgba(30, 94, 255, 0.12);
+}
+
+.admin-select {
+  height: 40px;
+  padding: 0 12px;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #0F172A;
+  transition: all 0.15s ease;
+}
+
+.admin-select:focus {
+  outline: none;
+  border-color: #1E5EFF;
+  box-shadow: 0 0 0 3px rgba(30, 94, 255, 0.12);
+}
+
+/* Blockchain Visualizer */
+.admin-chain-flow {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.admin-chain-block {
+  flex: 1;
+  min-width: 220px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.admin-chain-block:hover {
+  background: #FFFFFF;
+  border-color: #1E5EFF;
+  box-shadow: 0 4px 12px rgba(30, 94, 255, 0.08);
+}
+
+.admin-chain-arrow {
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Admin Table Suite */
+.admin-table-wrap {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.admin-table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+}
+
+.admin-table th {
+  background-color: #F8FAFC;
+  color: #475569;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 14px 16px;
+  border-bottom: 1px solid #E2E8F0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #F1F5F9;
+  color: #0F172A;
+  vertical-align: middle;
+  background-color: #FFFFFF;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background-color: #F8FAFC;
+}
+
+.admin-user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-avatar-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  background: #EFF6FF;
+  color: #1E5EFF;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #DBEAFE;
+  flex-shrink: 0;
+}
+
+/* Executive Admin Badges */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.admin-badge-active { background: #EFF6FF; color: #1E5EFF; border: 1px solid #BFDBFE; }
+.admin-badge-frozen { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+.admin-badge-admin { background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE; }
+.admin-badge-user { background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }
+.admin-badge-low { background: #EFF6FF; color: #1E5EFF; border: 1px solid #BFDBFE; }
+.admin-badge-medium { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+.admin-badge-high { background: #FFF1F2; color: #BE123C; border: 1px solid #FECDD3; }
+.admin-badge-critical { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+.admin-badge-cleared { background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0; }
+.admin-badge-escalated { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+.admin-badge-pending { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
+
+/* Admin Action Buttons */
+.admin-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.admin-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.admin-action-btn:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+
+.admin-action-btn-primary {
+  background: #1E5EFF;
+  color: #FFFFFF;
+  border-color: #1E5EFF;
+}
+
+.admin-action-btn-primary:hover {
+  background: #164FD6;
+  border-color: #164FD6;
+  color: #FFFFFF;
+}
+
+.admin-action-btn-danger {
+  background: #FEF2F2;
+  color: #991B1B;
+  border-color: #FECACA;
+}
+
+.admin-action-btn-danger:hover {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #7F1D1D;
+}
+
+/* SIEM Rule Cards */
+.admin-rule-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  transition: all 0.2s ease;
+}
+
+.admin-rule-card:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.admin-rule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-rule-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-rule-desc {
+  color: #475569;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  margin-bottom: 0.875rem;
+}
+
+.admin-rule-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 8px 12px;
+  background: #F8FAFC;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  color: #64748B;
+  border: 1px solid #F1F5F9;
+}
+
+.admin-rule-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #F1F5F9;
+}
+
+/* Pagination */
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #FFFFFF;
+  border-top: 1px solid #E2E8F0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-pagination-links {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.admin-page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #334155;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.admin-page-link:hover {
+  border-color: #CBD5E1;
+  background: #F8FAFC;
+}
+
+.admin-page-link.active {
+  background: #1E5EFF;
+  border-color: #1E5EFF;
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   9. Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .transfer-grid, .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .soc-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+  }
+
+  .auth-hero {
+    display: none; /* Mobile view: focus on login form */
+  }
+
+  .auth-form-side {
+    padding: var(--space-6);
+  }
+
+  .app-header {
+    padding: 0 var(--space-4);
+  }
+
+  .app-nav {
+    display: none; /* Hide header tabs on mobile */
+  }
+
+  .header-search {
+    display: none;
+  }
+
+  .soc-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-selector-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   7. Landing Page (frontend/index.html)
+   ========================================================================== */
+.landing-hero {
+  background: linear-gradient(145deg, #071324 0%, #0B1F3A 40%, #153A68 100%);
+  color: #FFFFFF;
+  padding: var(--space-16) var(--space-6) var(--space-12);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20px 20px, rgba(30, 94, 255, 0.15) 2px, transparent 0%),
+    radial-gradient(circle at 60px 60px, rgba(255, 255, 255, 0.05) 1px, transparent 0%);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+
+.landing-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(30, 94, 255, 0.15);
+  border: 1px solid rgba(30, 94, 255, 0.35);
+  color: #82AEFF;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-bottom: var(--space-6);
+  letter-spacing: 0.02em;
+}
+
+.landing-title {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #FFFFFF;
+  margin-bottom: var(--space-4);
+}
+
+.landing-title-accent {
+  background: linear-gradient(135deg, #1E5EFF 0%, #60A5FA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.landing-desc {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #CBD5E1;
+  max-width: 680px;
+  margin: 0 auto var(--space-8);
+}
+
+.landing-cta-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.landing-section {
+  padding: var(--space-12) var(--space-6);
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+
+.feature-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
+}
+
+.feature-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-secondary-subtle);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.demo-account-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.demo-account-card {
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+

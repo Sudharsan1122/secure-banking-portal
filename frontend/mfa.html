@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Factor Verification | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="mfa-container">
+        <main class="mfa-card" id="main-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                <span class="badge badge-info">Step 2 of 2</span>
+                <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+
+            <!-- SVG 48px Royal Blue Shield Icon -->
+            <div class="mfa-icon-wrap" aria-hidden="true">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <rect x="9" y="9" width="6" height="5" rx="1"/>
+                </svg>
+            </div>
+
+            <h1 class="h2" style="margin-bottom: var(--space-1);">Second Factor Verification</h1>
+            <p id="mfaPrompt" class="body" style="color: var(--text-muted); margin-bottom: var(--space-4);">
+                Enter the 6-digit one-time passcode
+            </p>
+
+            <!-- Simulated MFA Display Box (Academic Demo Feature) -->
+            <div class="card" style="background-color: var(--bg-subtle); border-style: dashed; padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4); text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">
+                        Simulated OTP Dispatch
+                    </div>
+                    <button type="button" id="autofillBtn" class="btn btn-secondary btn-sm">
+                        Auto-fill Code
+                    </button>
+                </div>
+                <div style="margin-top: 6px; font-size: 0.8125rem; color: var(--text-muted);">
+                    Passcode: <code id="simulatedOtpCode" class="mono" style="font-size: 1.125rem; font-weight: 700; color: var(--color-secondary);">------</code>
+                </div>
+            </div>
+
+            <div id="errorAlert" class="alert alert-danger" style="display: none;" role="alert"></div>
+
+            <form id="mfaForm" autocomplete="off" novalidate>
+                <!-- 6 Separate OTP Boxes -->
+                <div class="otp-inputs" aria-label="Enter 6-digit OTP">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" autofocus aria-label="Digit 1">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 2">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 3">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 4">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 5">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 6">
+                </div>
+
+                <!-- Emergency Recovery Code input (collapsible) -->
+                <div id="recoveryField" class="field" style="display: none; text-align: left; margin-bottom: var(--space-4);">
+                    <label for="recoveryCodeInput" class="field-label">Emergency Recovery Code</label>
+                    <input type="text" id="recoveryCodeInput" class="field-input mono" placeholder="XXXX-XXXX-XXXX" maxlength="32">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-5); font-size: 0.8125rem;">
+                    <span id="resendTimer" class="caption mono">Resend in 1:00</span>
+                    <a href="#" id="recoveryToggle" class="caption" style="font-weight: 500;">Use recovery code</a>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg">
+                    <span>Verify & Establish Secure Session</span>
+                </button>
+            </form>
+
+            <div style="margin-top: var(--space-6); font-size: 0.875rem;">
+                <a href="login.html" style="color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    <span>Back to Sign In</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/mfa.js"></script>
+</body>
+</html>

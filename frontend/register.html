@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Banking Account | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Left Hero Panel (60%) -->
+        <section class="auth-hero" aria-label="Brand Overview">
+            <div class="auth-hero-header">
+                <img src="../images/logo.svg" alt="SecureBank Logo" height="38">
+            </div>
+
+            <div class="auth-hero-body">
+                <h1 class="auth-hero-title">Open an account built on verifiable security.</h1>
+                <p class="auth-hero-desc">
+                    Join the next generation of financial infrastructure. Every account is backed by deterministic row-level locks, multi-tier velocity bounds, and cryptographic tamper defense.
+                </p>
+                <div class="auth-hero-illustration">
+                    <img src="../images/illustrations/vault.svg" alt="Fintech Vault Security" style="width: 100%; height: auto;">
+                </div>
+            </div>
+
+            <div class="auth-trust-badges">
+                <div class="trust-badge-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>256-Bit Hardware AES</span>
+                </div>
+                <div class="trust-badge-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span>Bcrypt Cost Factor 10</span>
+                </div>
+                <div class="trust-badge-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Automated AML Triage</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Form Panel (40%) -->
+        <main class="auth-form-side" id="main-content">
+            <div class="auth-card" style="max-width: 440px;">
+                <div class="auth-card-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                        <span class="badge badge-info">Account Enrollment</span>
+                        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle theme">
+                            <span class="theme-icon">🌙</span>
+                        </button>
+                    </div>
+                    <h2 class="auth-card-title">Create Account</h2>
+                    <p class="auth-card-subtitle">Enter your legal profile information to register</p>
+                </div>
+
+                <div id="errorAlert" class="alert alert-danger" style="display: none;" role="alert"></div>
+
+                <form id="registerForm" autocomplete="off" novalidate>
+                    <div class="field">
+                        <label for="name" class="field-label">Full Legal Name</label>
+                        <input type="text" id="name" class="field-input" placeholder="e.g. John Doe" required autofocus>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                        <div class="field">
+                            <label for="email" class="field-label">Email Address</label>
+                            <input type="email" id="email" class="field-input" placeholder="john@example.com" required>
+                        </div>
+                        <div class="field">
+                            <label for="phone" class="field-label">Mobile Phone</label>
+                            <input type="text" id="phone" class="field-input" placeholder="+1-555-0199" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="username" class="field-label">Desired Username</label>
+                        <input type="text" id="username" class="field-input mono" placeholder="john_doe" required>
+                        <span class="field-hint">3-30 alphanumeric characters and underscores</span>
+                    </div>
+
+                    <div class="field">
+                        <label for="password" class="field-label">Master Password</label>
+                        <input type="password" id="password" class="field-input" placeholder="••••••••••••" required>
+
+                        <!-- Live Password Complexity Checklist -->
+                        <div class="card" style="background-color: var(--bg-subtle); padding: var(--space-3); margin-top: var(--space-2); border-radius: var(--radius-md);">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px;">
+                                Password Complexity Requirements:
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.75rem;">
+                                <div id="reqLength" style="color: var(--color-danger);">✗ Min 8 characters</div>
+                                <div id="reqUpper" style="color: var(--color-danger);">✗ 1 Uppercase (A-Z)</div>
+                                <div id="reqLower" style="color: var(--color-danger);">✗ 1 Lowercase (a-z)</div>
+                                <div id="reqNumber" style="color: var(--color-danger);">✗ 1 Number (0-9)</div>
+                                <div id="reqSpecial" style="color: var(--color-danger); grid-column: 1 / -1;">✗ 1 Special symbol (!@#$%^&*)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-5);">
+                        <span>Create Account</span>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <span>Already enrolled?</span>
+                    <a href="login.html" style="font-weight: 600; margin-left: 4px;">Sign in here</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/register.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+name: Continuous Security & Regression Testing
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  security-tests:
+    name: PHP 8.2 Security & Regression Matrix
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: secure_banking
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_mysql, mbstring, gd, fileinfo
+          coverage: none
+
+      - name: Initialize Database Schema & Seed Data
+        run: |
+          mysql -h 127.0.0.1 -u root -proot secure_banking < database/schema.sql
+          mysql -h 127.0.0.1 -u root -proot secure_banking < database/seeds.sql
+
+      - name: Lint PHP Syntax
+        run: |
+          find . -name "*.php" -not -path "./vendor/*" -exec php -l {} +
+
+      - name: Run 12 Vulnerability Mitigation Regression Suites
+        run: |
+          php tests/attacks/run_attack_tests.php
+
+      - name: Run Master Comprehensive Test Suite (147 Tests)
+        run: |
+          php tests/run_all.php

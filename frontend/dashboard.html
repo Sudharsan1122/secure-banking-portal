@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Sticky 64px Header -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <a href="dashboard.html" class="app-brand">
+                <img src="../images/logo.svg" alt="SecureBank Logo" height="32">
+            </a>
+            <nav class="app-nav" aria-label="Main Navigation">
+                <a href="dashboard.html" class="app-nav-link active">Dashboard</a>
+                <a href="transfer.html" class="app-nav-link">Transfer</a>
+                <a href="transactions.html" class="app-nav-link">Transactions</a>
+                <a href="beneficiaries.html" class="app-nav-link">Beneficiaries</a>
+                <a href="schedule.html" class="app-nav-link">Recurring</a>
+                <a href="devices.html" class="app-nav-link">Devices</a>
+                <a href="profile.html" class="app-nav-link">Security Profile</a>
+                <a href="../admin/security-dashboard.php" id="adminNavLink" style="display:none;" class="app-nav-link badge badge-warning">SOC Admin</a>
+            </nav>
+        </div>
+
+        <div class="app-header-right">
+            <!-- Global Search -->
+            <div class="header-search">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" placeholder="Search transactions, payees..." aria-label="Global search">
+                <span class="kbd-badge">⌘K</span>
+            </div>
+
+            <!-- Theme Toggle -->
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+
+            <!-- Notifications Bell -->
+            <a href="notifications.html" class="btn btn-ghost btn-sm btn-icon notification-btn" aria-label="Notifications" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span id="unreadNotifBadge" class="notification-badge-dot" style="display: none;"></span>
+            </a>
+
+            <!-- Avatar Dropdown -->
+            <div class="dropdown">
+                <button type="button" class="btn btn-ghost btn-sm" data-dropdown-toggle style="padding: 4px 8px; border-radius: var(--radius-full); gap: var(--space-2);">
+                    <div id="userAvatar" class="avatar avatar-sm" style="background-color: var(--color-secondary);">
+                        <span id="userAvatarInitials">U</span>
+                    </div>
+                    <span id="userGreeting" style="font-weight: 600; font-size: 0.8125rem;">Customer</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="dropdown-menu">
+                    <a href="profile.html" class="dropdown-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Security Profile</span>
+                    </a>
+                    <a href="devices.html" class="dropdown-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        <span>Active Devices</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button type="button" id="logoutBtn" class="dropdown-item" style="color: var(--color-danger); width: 100%; border: none; background: transparent; text-align: left;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main" id="main-content">
+        <!-- Welcome Strip -->
+        <section class="welcome-strip" aria-label="Welcome">
+            <div>
+                <h1 class="welcome-greeting" id="timeAwareGreeting">Good day, Customer</h1>
+                <div class="welcome-date" id="currentDateDisplay">Real-time banking telemetry</div>
+            </div>
+            <div style="display: flex; gap: var(--space-3); align-items: center;">
+                <button type="button" id="openAccountBtn" class="btn btn-secondary btn-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Open Account</span>
+                </button>
+                <a href="transfer.html" class="btn btn-primary btn-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    <span>Quick Transfer</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Balance Hero Card (Gradient) -->
+        <section class="balance-hero-card" aria-label="Portfolio Net Worth">
+            <div class="balance-hero-top">
+                <div>
+                    <div class="balance-label">Total Portfolio Net Worth</div>
+                    <div class="balance-amount" id="displayBalance">
+                        <span class="balance-currency">$</span>0.00 USD
+                    </div>
+                    <div style="display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-2);">
+                        <span class="balance-badge">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+                            <span>+2.4% this month</span>
+                        </span>
+                        <span class="caption mono" id="displayAccountNumber" style="color: #CBD5E1;">Primary Account: Loading...</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="transfer.html" class="btn btn-glass btn-sm">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                        <span>Send</span>
+                    </a>
+                    <a href="transactions.html" class="btn btn-glass btn-sm">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        <span>Statements</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sub-Accounts Inside Hero -->
+            <div class="subaccounts-hero-row" id="accountsGridContainer">
+                <div class="subaccount-pill">
+                    <span class="subaccount-pill-type">Savings</span>
+                    <span class="subaccount-pill-amount">Loading...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spending Category Highlights -->
+        <section style="margin-bottom: var(--space-8);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                <h2 class="h3">Spending Breakdown by Category</h2>
+                <a href="transactions.html" class="caption" style="font-weight: 600;">View Detailed Ledger &rarr;</a>
+            </div>
+            <div class="accounts-grid" id="topCategoriesContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4);">
+                <div class="card text-muted" style="padding: var(--space-4); font-size: 0.8125rem;">
+                    Calculating category analytics...
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Row -->
+        <section class="charts-grid" aria-label="Visual Analytics">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Spending by Category</h2>
+                    <span class="caption">Real-Time Distribution</span>
+                </div>
+                <div class="card-body" style="height: 240px; position: relative; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">6-Month Cash Flow</h2>
+                    <span class="caption">Income vs Expenses</span>
+                </div>
+                <div class="card-body" style="height: 240px; position: relative;">
+                    <canvas id="cashFlowChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Transactions Card -->
+        <section class="card" aria-label="Recent Transactions">
+            <div class="card-header">
+                <div>
+                    <h2 class="card-title">Recent Transactions</h2>
+                    <div class="card-subtitle">Last 5 state-verified ledger entries</div>
+                </div>
+                <a href="transactions.html" class="btn btn-secondary btn-sm">View Full History</a>
+            </div>
+            <div class="table-container">
+                <table class="table" aria-label="Transactions Table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Flow</th>
+                            <th>Counterparty</th>
+                            <th class="text-right">Amount</th>
+                            <th>Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        <tr>
+                            <td colspan="5" class="text-center text-muted" style="padding: var(--space-8);">
+                                Loading cryptographic ledger entries...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer" style="font-size: 0.75rem; color: var(--text-muted); justify-content: space-between;">
+                <span>🔒 Cryptographic SHA-256 hash-chain verification enabled</span>
+                <span>Rendered strictly via DOM <code>textContent</code></span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Open Account Accessible Modal -->
+    <div id="accountModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle" class="modal-title">Open New Bank Account</h3>
+                <button type="button" class="modal-close" id="closeModalBtn" aria-label="Close dialog">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <form id="openAccountForm">
+                <div class="modal-body">
+                    <div class="field">
+                        <label for="modalAccType" class="field-label">Account Type</label>
+                        <select id="modalAccType" class="field-input" required>
+                            <option value="savings">Savings Account (3.5% APY)</option>
+                            <option value="current">Current / Checking Account (0.0% APY)</option>
+                            <option value="fd">Fixed Deposit (6.5% APY)</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="modalAccNick" class="field-label">Account Nickname</label>
+                        <input type="text" id="modalAccNick" class="field-input" placeholder="e.g. Travel Reserve, Emergency Fund">
+                    </div>
+                    <div class="field">
+                        <label for="modalAccDeposit" class="field-label">Initial Opening Deposit ($)</label>
+                        <input type="number" id="modalAccDeposit" class="field-input tabular-nums" step="0.01" min="0" value="0.00">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" id="cancelModalBtn" data-modal-close="accountModal">Cancel</button>
+                    <button type="submit" id="modalSubmitBtn" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/components/modal.js"></script>
+    <script src="../js/components/dropdown.js"></script>
+    <script src="../js/vendor/chart.min.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

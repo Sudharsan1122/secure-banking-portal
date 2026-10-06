@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank | Enterprise Financial & Security Architecture</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-left">
+            <a href="index.html" class="header-logo" aria-label="SecureBank Home">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                </svg>
+                <div class="logo-text-group">
+                    <span class="logo-name">SecureBank</span>
+                    <span class="logo-tagline">Banking, Secured.</span>
+                </div>
+            </a>
+        </div>
+
+        <nav class="app-nav" aria-label="Public Navigation">
+            <a href="login.html" class="nav-link">Sign In</a>
+            <a href="register.html" class="nav-link">Open Account</a>
+            <a href="../admin/security-dashboard.php" class="nav-link">SOC SIEM</a>
+        </nav>
+
+        <div class="header-right">
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle theme">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <a href="login.html" class="btn btn-primary btn-sm">
+                <span>Sign In</span>
+            </a>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="landing-hero">
+            <div class="landing-hero-content">
+                <div class="landing-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    <span>Enterprise Banking Core • Cryptographic Hash-Chain Ledger • Zero-Trust SOC</span>
+                </div>
+
+                <h1 class="landing-title">
+                    The Modern Banking Platform Built on <span class="landing-title-accent">Cryptographic Proof</span>
+                </h1>
+
+                <p class="landing-desc">
+                    Engineered with defensive depth, ACID pessimistic row-locking atomicity, 4-tier real-time SIEM anomaly detection, and strict OWASP Top 10 mitigations.
+                </p>
+
+                <div class="landing-cta-group">
+                    <a href="login.html" class="btn btn-primary btn-lg">
+                        <span>Access Client Portal</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                    <a href="register.html" class="btn btn-secondary btn-lg">
+                        <span>Open New Account</span>
+                    </a>
+                    <a href="../admin/security-dashboard.php" class="btn btn-ghost btn-lg" style="color: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <span>Live SOC Console &rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Pillars Section -->
+        <section class="landing-section">
+            <div style="text-align: center; max-width: 640px; margin: 0 auto var(--space-8);">
+                <span class="badge badge-primary">System Architecture</span>
+                <h2 class="h1" style="margin-top: var(--space-2); margin-bottom: var(--space-2);">Engineered for Defense & Scale</h2>
+                <p class="body" style="color: var(--text-muted);">
+                    Four synchronized architectural pillars working together to deliver a resilient financial portal.
+                </p>
+            </div>
+
+            <div class="feature-grid">
+                <!-- Pillar A -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrap">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                        <h3 class="h3">Security Depth</h3>
+                        <span class="badge badge-success">Pillar A</span>
+                    </div>
+                    <p class="body-sm" style="color: var(--text-secondary); margin-bottom: var(--space-3);">
+                        CSP nonces, timing-safe <code>hash_equals()</code> CSRF synchronizer tokens, 4-site session fixation regeneration, exponential lockout, and SHA-256 reset flows.
+                    </p>
+                    <span class="caption" style="color: var(--text-muted); font-weight: 500;">✓ 13 Defensive Controls</span>
+                </div>
+
+                <!-- Pillar B -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrap" style="background-color: var(--color-success-bg); color: var(--color-success);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                        <h3 class="h3">Real-World Banking</h3>
+                        <span class="badge badge-info">Pillar B</span>
+                    </div>
+                    <p class="body-sm" style="color: var(--text-secondary); margin-bottom: var(--space-3);">
+                        ACID pessimistic row locking (<code>FOR UPDATE</code>), multi-account isolation, recurring transfer scheduling, single/daily/monthly velocity enforcement, and PDF statement generation.
+                    </p>
+                    <span class="caption" style="color: var(--text-muted); font-weight: 500;">✓ 10 Financial Workflows</span>
+                </div>
+
+                <!-- Pillar C -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrap" style="background-color: var(--color-warning-bg); color: var(--color-warning);">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                        <h3 class="h3">Observability & SOC</h3>
+                        <span class="badge badge-warning">Pillar C</span>
+                    </div>
+                    <p class="body-sm" style="color: var(--text-secondary); margin-bottom: var(--space-3);">
+                        Real-time Server-Sent Events (SSE), 4-tier threat taxonomy, 6 heuristic anomaly detectors, dynamic posture scoring (0–100), and Prometheus <code>/admin/metrics.php</code> exporter.
+                    </p>
+                    <span class="caption" style="color: var(--text-muted); font-weight: 500;">✓ 8 SIEM Capabilities</span>
+                </div>
+
+                <!-- Pillar E -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrap" style="background-color: rgba(147, 51, 234, 0.12); color: #9333ea;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                        <h3 class="h3">Fintech-Grade UX</h3>
+                        <span class="badge badge-neutral">Pillar E</span>
+                    </div>
+                    <p class="body-sm" style="color: var(--text-secondary); margin-bottom: var(--space-3);">
+                        Self-hosted Inter typography, WCAG AA compliant contrast, zero CDN dependencies, CSP nonces, focus traps, tabular numeric alignments, and seamless dark/light modes.
+                    </p>
+                    <span class="caption" style="color: var(--text-muted); font-weight: 500;">✓ 100% Nonce Compliant</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Evaluation Credentials Box -->
+        <section class="landing-section" style="padding-top: 0;">
+            <div class="card" style="border: 1px solid var(--border-strong); padding: var(--space-6);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); flex-wrap: wrap; gap: var(--space-2);">
+                    <div>
+                        <span class="badge badge-info" style="margin-bottom: 4px;">Evaluation Sandbox</span>
+                        <h3 class="h2">Testing & Demonstration Credentials</h3>
+                    </div>
+                    <span class="caption" style="color: var(--text-muted);">Database seeded & ready for evaluation</span>
+                </div>
+
+                <div class="demo-account-grid">
+                    <div class="demo-account-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                            <span class="body-sm" style="font-weight: 600; color: var(--text-primary);">Client User</span>
+                            <span class="badge badge-success">Role: user</span>
+                        </div>
+                        <p class="caption" style="color: var(--text-muted); margin-bottom: var(--space-3);">
+                            Access to dashboard, 5 sub-accounts, fund transfers, beneficiary OTP, statements, and security score.
+                        </p>
+                        <div style="font-family: var(--font-mono); font-size: 0.8125rem; background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <div><strong>Username:</strong> <code>john_doe</code></div>
+                            <div><strong>Password:</strong> <code>User@1234</code></div>
+                        </div>
+                    </div>
+
+                    <div class="demo-account-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                            <span class="body-sm" style="font-weight: 600; color: var(--text-primary);">Security Administrator</span>
+                            <span class="badge badge-warning">Role: admin</span>
+                        </div>
+                        <p class="caption" style="color: var(--text-muted); margin-bottom: var(--space-3);">
+                            Full access to real-time SOC SIEM console, live SSE event feed, anomaly triage, audit verification, and user management.
+                        </p>
+                        <div style="font-family: var(--font-mono); font-size: 0.8125rem; background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <div><strong>Username:</strong> <code>admin</code></div>
+                            <div><strong>Password:</strong> <code>Admin@1234</code></div>
+                        </div>
+                    </div>
+
+                    <div class="demo-account-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                            <span class="body-sm" style="font-weight: 600; color: var(--text-primary);">Simulated MFA OTP</span>
+                            <span class="badge badge-neutral">Evaluation Flow</span>
+                        </div>
+                        <p class="caption" style="color: var(--text-muted); margin-bottom: var(--space-3);">
+                            6-digit temporal codes are automatically rendered on-screen and stored in <code>otp_codes</code> table for smooth grading.
+                        </p>
+                        <div style="font-family: var(--font-mono); font-size: 0.8125rem; background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <div><strong>MFA Mode:</strong> Auto-advance inputs</div>
+                            <div><strong>Lockout:</strong> 5 attempts sliding window</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <div style="display: flex; justify-content: space-between; align-items: center; max-width: var(--container-max); margin: 0 auto; flex-wrap: wrap; gap: var(--space-4);">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span class="caption" style="color: var(--text-muted);">&copy; 2026 SecureBank Financial Services Ltd. All security controls active.</span>
+            </div>
+            <div style="display: flex; gap: var(--space-4);">
+                <a href="login.html" class="caption" style="color: var(--text-secondary);">Sign In</a>
+                <a href="register.html" class="caption" style="color: var(--text-secondary);">Open Account</a>
+                <a href="../admin/security-dashboard.php" class="caption" style="color: var(--text-secondary);">SOC SIEM Console</a>
+                <a href="../admin/metrics.php" class="caption" style="color: var(--text-secondary);">Prometheus Metrics</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/theme.js"></script>
+</body>
+</html>

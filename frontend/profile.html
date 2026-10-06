@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Settings & Profile | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Sticky 64px Header -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <a href="dashboard.html" class="app-brand">
+                <img src="../images/logo.svg" alt="SecureBank Logo" height="32">
+            </a>
+            <nav class="app-nav" aria-label="Main Navigation">
+                <a href="dashboard.html" class="app-nav-link">Dashboard</a>
+                <a href="transfer.html" class="app-nav-link">Transfer</a>
+                <a href="transactions.html" class="app-nav-link">Transactions</a>
+                <a href="beneficiaries.html" class="app-nav-link">Beneficiaries</a>
+                <a href="schedule.html" class="app-nav-link">Recurring</a>
+                <a href="devices.html" class="app-nav-link">Devices</a>
+                <a href="profile.html" class="app-nav-link active">Security Profile</a>
+            </nav>
+        </div>
+
+        <div class="app-header-right">
+            <!-- Theme Toggle -->
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+
+            <!-- Notifications Bell -->
+            <a href="notifications.html" class="btn btn-ghost btn-sm btn-icon notification-btn" aria-label="Notifications" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span id="unreadNotifBadge" class="notification-badge-dot" style="display: none;"></span>
+            </a>
+
+            <button type="button" id="logoutBtn" class="btn btn-secondary btn-sm">Sign Out</button>
+        </div>
+    </header>
+
+    <main class="app-main" id="main-content">
+        <div class="welcome-strip">
+            <div>
+                <h1 class="welcome-greeting">Identity & Security Profile</h1>
+                <div class="welcome-date">Account attributes, multi-factor settings, and password rotation</div>
+            </div>
+            <div>
+                <span class="badge badge-info" id="profRole">USER</span>
+            </div>
+        </div>
+
+        <!-- Two-Column Profile Grid -->
+        <div class="profile-grid">
+            <!-- Left Column: Identity Card & Posture Score -->
+            <div>
+                <!-- Identity Card -->
+                <div class="card" style="text-align: center; margin-bottom: var(--space-6);">
+                    <div style="margin: var(--space-4) auto var(--space-3); width: 80px; height: 80px; position: relative;">
+                        <div id="profileAvatarInitials" class="avatar avatar-xl" style="width: 80px; height: 80px; background: linear-gradient(135deg, #1E5EFF, #0B1F3A); font-size: 1.75rem;">
+                            U
+                        </div>
+                    </div>
+                    <h2 class="h2" id="profHeaderName" style="margin-bottom: 2px;">Loading...</h2>
+                    <div class="caption mono" id="profHeaderUsername" style="color: var(--text-muted); margin-bottom: var(--space-4);">@username</div>
+                    <div style="display: flex; justify-content: center; gap: var(--space-2);">
+                        <a href="devices.html" class="btn btn-secondary btn-sm">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            <span>Manage Devices</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Security Posture Score Card (C4) -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Security Posture Score</h3>
+                        <span id="scoreLevelBadge" class="badge badge-success">Good</span>
+                    </div>
+                    <div class="card-body">
+                        <!-- SVG Circular Gauge -->
+                        <div class="score-gauge-container">
+                            <div style="position: relative; width: 140px; height: 140px;">
+                                <svg class="circular-gauge" viewBox="0 0 140 140">
+                                    <circle class="gauge-bg" cx="70" cy="70" r="58" />
+                                    <circle id="scoreGaugeCircle" class="gauge-progress" cx="70" cy="70" r="58"
+                                            stroke-dasharray="364.4" stroke-dashoffset="364.4" stroke="#00B87C" />
+                                </svg>
+                                <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                    <span id="scoreNumber" class="gauge-score-text">0</span>
+                                    <span class="caption mono">/ 100</span>
+                                </div>
+                            </div>
+                            <h4 id="scoreTitle" style="margin-top: var(--space-3); font-size: 0.95rem; font-weight: 600; text-align: center;">
+                                Computing hygiene score...
+                            </h4>
+                        </div>
+
+                        <!-- Rubric Breakdown -->
+                        <div style="margin-top: var(--space-4);">
+                            <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--space-2);">
+                                Hygiene Rubric
+                            </div>
+                            <div id="scoreRubricList" style="font-size: 0.8125rem;">
+                                Loading rubric breakdown...
+                            </div>
+                        </div>
+
+                        <!-- Recommendations List -->
+                        <div style="margin-top: var(--space-4); padding: var(--space-3); background-color: var(--bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                            <div style="font-size: 0.75rem; font-weight: 600; color: var(--color-secondary); margin-bottom: 4px;">
+                                💡 Hygiene Recommendations
+                            </div>
+                            <ul id="scoreTipsList" style="margin: 0; padding-left: 1.25rem; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5;"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Personal Info, Avatar Upload, Password Rotation, Danger Zone -->
+            <div>
+                <!-- Personal Info Details Card -->
+                <div class="card" style="margin-bottom: var(--space-6);">
+                    <div class="card-header">
+                        <h2 class="card-title">Personal Information</h2>
+                        <span class="caption">Verified Account Holder</span>
+                    </div>
+                    <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); font-size: 0.875rem;">
+                        <div>
+                            <span class="caption">Full Name</span>
+                            <div id="profName" style="font-weight: 600; margin-top: 2px;">Loading...</div>
+                        </div>
+                        <div>
+                            <span class="caption">Username</span>
+                            <div id="profUsername" class="mono" style="font-weight: 600; margin-top: 2px;">-</div>
+                        </div>
+                        <div>
+                            <span class="caption">Primary Email</span>
+                            <div id="profEmail" style="font-weight: 500; margin-top: 2px;">-</div>
+                        </div>
+                        <div>
+                            <span class="caption">Phone Number</span>
+                            <div id="profPhone" style="font-weight: 500; margin-top: 2px;">-</div>
+                        </div>
+                        <div>
+                            <span class="caption">Primary Account Number</span>
+                            <div id="profAccount" class="mono" style="font-weight: 600; color: var(--color-secondary); margin-top: 2px;">-</div>
+                        </div>
+                        <div>
+                            <span class="caption">Enrollment Date</span>
+                            <div id="profCreated" class="mono" style="font-size: 0.8125rem; margin-top: 2px;">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avatar Sanitization Card (A8) -->
+                <div class="card" style="margin-bottom: var(--space-6);">
+                    <div class="card-header">
+                        <h2 class="card-title">Profile Avatar</h2>
+                        <span class="badge badge-success">A8 Sanitized Upload</span>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; gap: var(--space-4); align-items: center; margin-bottom: var(--space-4);">
+                            <img id="avatarImg" src="../api/avatar.php" alt="Current Avatar" 
+                                 style="width: 64px; height: 64px; border-radius: var(--radius-full); object-fit: cover; border: 2px solid var(--border-strong);">
+                            <p class="body" style="font-size: 0.8125rem; color: var(--text-muted); margin: 0;">
+                                Multi-layer defensive upload pipeline: magic byte validation, EXIF metadata purging, and GD rasterization neutralization.
+                            </p>
+                        </div>
+                        <form id="avatarForm" enctype="multipart/form-data">
+                            <div class="field" style="margin-bottom: var(--space-3);">
+                                <input type="file" id="avatarFile" name="avatar" accept=".jpg,.jpeg,.png" class="field-input" style="padding: 6px;" required>
+                                <span class="field-hint">Permitted: JPEG, PNG. Maximum size: 2MB.</span>
+                            </div>
+                            <button type="submit" id="btnUploadAvatar" class="btn btn-secondary btn-sm">
+                                <span>Upload & Sanitize Avatar</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Password Rotation Card -->
+                <div class="card" style="margin-bottom: var(--space-6);">
+                    <div class="card-header">
+                        <h2 class="card-title">Rotate Master Password</h2>
+                        <span class="caption">Bcrypt Cost-10</span>
+                    </div>
+                    <div class="card-body">
+                        <form id="passwordForm" autocomplete="off" novalidate>
+                            <div class="field">
+                                <label for="currentPassword" class="field-label">Current Master Password</label>
+                                <input type="password" id="currentPassword" class="field-input" placeholder="••••••••••••" required>
+                                <span class="field-hint">Step-up verification required to authorize credential modification</span>
+                            </div>
+
+                            <div class="field">
+                                <label for="newPassword" class="field-label">New Master Password</label>
+                                <input type="password" id="newPassword" class="field-input" placeholder="••••••••••••" required>
+                                <span class="field-hint">Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 symbol</span>
+                            </div>
+
+                            <div class="field">
+                                <label for="confirmPassword" class="field-label">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="field-input" placeholder="••••••••••••" required>
+                            </div>
+
+                            <button type="submit" id="savePasswordBtn" class="btn btn-primary">
+                                <span>Update Password</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Danger Zone Card -->
+                <div class="card" style="border-color: rgba(229, 72, 77, 0.4); background-color: var(--color-danger-bg);">
+                    <div class="card-header" style="border-bottom-color: rgba(229, 72, 77, 0.2);">
+                        <h2 class="card-title" style="color: var(--color-danger);">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <span>Danger Zone</span>
+                        </h2>
+                    </div>
+                    <div class="card-body" style="font-size: 0.8125rem; color: var(--color-danger);">
+                        <p style="margin-bottom: var(--space-3);">
+                            Terminating your banking relationship will immediately revoke active sessions, freeze account ledger balances, and mark devices as revoked.
+                        </p>
+                        <button type="button" class="btn btn-danger btn-sm" disabled style="opacity: 0.6; cursor: not-allowed;">
+                            Request Account Closure (Contact Branch Admin)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>

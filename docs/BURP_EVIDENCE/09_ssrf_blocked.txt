@@ -1,0 +1,69 @@
+================================================================================
+BURP SUITE EVIDENCE ITEM 09: SERVER-SIDE REQUEST FORGERY (SSRF) DEFENSE
+================================================================================
+Vulnerability: Server-Side Request Forgery (OWASP A10:2021 - SSRF / CWE-918)
+Target Endpoint: POST /api/admin_diagnostics.php
+Tool: Burp Suite Repeater
+Attack Vector: Loopback Probing (127.0.0.1) & Cloud Instance Metadata Harvesting (169.254.169.254)
+Defensive Controls:
+  1. Strict External Domain Host Whitelist (`SSRF_WHITELIST_HOSTS`)
+  2. Recursive DNS Resolution Filtering
+  3. Private & Loopback IP Subnet Firewall (127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 169.254.0.0/16)
+
+--------------------------------------------------------------------------------
+TEST CASE 1: ATTEMPT TO PROBE LOCAL ADMINISTRATIVE SERVICES (127.0.0.1)
+--------------------------------------------------------------------------------
+RAW HTTP REQUEST (Burp Repeater):
+POST /api/admin_diagnostics.php HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Gecko/20100101
+Cookie: PHPSESSID=admin_authenticated_session_cookie
+X-CSRF-Token: 3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b
+Content-Type: application/json
+Content-Length: 58
+Connection: close
+
+{"action":"check_upstream","target":"http://127.0.0.1:3306"}
+
+RAW HTTP RESPONSE (Server Defense):
+HTTP/1.1 400 Bad Request
+Date: Wed, 23 Sep 2026 04:24:40 GMT
+Server: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-1f2a3b4c5d6e7f8a9b0c1d2e'; style-src 'self' 'nonce-1f2a3b4c5d6e7f8a9b0c1d2e'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+Content-Type: application/json; charset=UTF-8
+Connection: close
+Content-Length: 104
+
+{"status":"error","code":400,"message":"SSRF Blocked: Target host resolves to private or loopback IP range."}
+
+--------------------------------------------------------------------------------
+TEST CASE 2: ATTEMPT TO HARVEST CLOUD METADATA (169.254.169.254)
+--------------------------------------------------------------------------------
+RAW HTTP REQUEST:
+POST /api/admin_diagnostics.php HTTP/1.1
+Host: 127.0.0.1:8080
+Cookie: PHPSESSID=admin_authenticated_session_cookie
+X-CSRF-Token: 3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b
+Content-Type: application/json
+Content-Length: 82
+
+{"action":"check_upstream","target":"http://169.254.169.254/latest/meta-data/iam/"}
+
+RAW HTTP RESPONSE:
+HTTP/1.1 400 Bad Request
+Content-Type: application/json; charset=UTF-8
+
+{"status":"error","code":400,"message":"SSRF Blocked: Destination address is restricted by security policy."}
+
+--------------------------------------------------------------------------------
+SECURITY ANALYSIS:
+--------------------------------------------------------------------------------
+1. DNS Pinning & Inspection: `dns_get_record()` resolves the domain to an IP address before establishing
+   any socket connection.
+2. CIDR Range Matching: The resolved IP is compared against RFC 1918 and RFC 3927 subnets using bitwise
+   masking. Loopback (`127.0.0.1`), IPv6 loopback (`::1`), link-local metadata (`169.254.169.254`), and
+   private internal RFC 1918 addresses are dropped instantly.
+3. SIEM Audit: Every SSRF probe logs an event of type `SSRF_BLOCKED` with severity `high`.

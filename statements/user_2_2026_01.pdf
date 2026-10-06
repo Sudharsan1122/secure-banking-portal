@@ -1,0 +1,19 @@
+%PDF-1.4
+% Secure Banking Portal - Official Account Statement
+===============================================================
+                  SECURE BANKING PORTAL
+              MONTHLY ACCOUNT STATEMENT (DEMO)
+===============================================================
+Account Holder : John Doe
+Username       : john_doe
+Period         : 2026-01
+Generated On   : 2026-01-31 23:59:59
+---------------------------------------------------------------
+Date                 | Type       | Amount       | Remark
+---------------------------------------------------------------
+2026-01-10 14:22:10  | CREDIT     |     15500.00 | Payroll Deposit
+2026-01-15 09:12:00  | DEBIT      |       350.00 | Milestone Payment #1
+---------------------------------------------------------------
+===============================================================
+End of Statement. Verified Cryptographically.
+%%EOF

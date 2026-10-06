@@ -1,0 +1,155 @@
+/* ==========================================================================
+   SecureBank — Master Stylesheet
+   Pillar E — Fintech-Grade Design System & Component Library
+   ========================================================================== */
+
+/* 1. Design Tokens & Theme Variables */
+@import url('tokens.css');
+
+/* 2. CSS Resets, Typography & Accessibility Primitives */
+@import url('base.css');
+
+/* 3. Component Library (Buttons, Fields, Cards, Badges, Tables, Modals, Toasts) */
+@import url('components.css');
+
+/* 4. Page Layouts & Feature Compositions */
+@import url('pages.css');
+
+/* ==========================================================================
+   5. Backward-Compatibility Mappings & Legacy Adapters
+   Ensures seamless interop with existing JS selectors and utility classes
+   ========================================================================== */
+:root {
+  --primary: var(--color-primary);
+  --primary-light: #163664;
+  --primary-dark: var(--color-primary-dark);
+  --accent: var(--color-secondary);
+  --accent-hover: var(--color-secondary-hover);
+  --success: var(--color-success);
+  --success-bg: var(--color-success-bg);
+  --danger: var(--color-danger);
+  --danger-bg: var(--color-danger-bg);
+  --warning: var(--color-warning);
+  --warning-bg: var(--color-warning-bg);
+  --text-main: var(--text-primary);
+  --border-color: var(--border-subtle);
+  --border-radius: var(--radius-md);
+  --bg-card: var(--bg-surface);
+  --font-family: var(--font-sans);
+}
+
+/* Legacy form class aliases */
+.form-group {
+  margin-bottom: var(--space-4);
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px var(--color-secondary-subtle);
+}
+
+.form-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Legacy button aliases */
+.btn-accent {
+  background-color: var(--color-secondary);
+  color: #FFFFFF;
+  border-color: var(--color-secondary);
+}
+
+.btn-accent:hover:not(:disabled) {
+  background-color: var(--color-secondary-hover);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--text-secondary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+}
+
+/* Legacy alerts */
+.alert {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.alert-danger {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid rgba(229, 72, 77, 0.25);
+}
+
+.alert-success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid rgba(0, 184, 124, 0.25);
+}
+
+.alert-info {
+  background-color: var(--color-info-bg);
+  color: var(--color-info);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+}
+
+.alert-warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid rgba(245, 166, 35, 0.25);
+}
+
+/* Spinners */
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #FFFFFF;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+.spinner-dark {
+  border: 2px solid rgba(15, 23, 42, 0.2);
+  border-top-color: var(--color-primary);
+}
+
+/* Legacy badges */
+.badge-debit  { background-color: var(--color-danger-bg); color: var(--color-danger); font-weight: 600; }
+.badge-credit { background-color: var(--color-success-bg); color: var(--color-success); font-weight: 600; }

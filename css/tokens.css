@@ -1,0 +1,153 @@
+/* ==========================================================================
+   SecureBank Design System — Tokens (Tokens.css)
+   Pillar E — Modern Fintech UI Design Tokens & Theme Variables
+   ========================================================================== */
+
+/* Self-Hosted Fonts */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/inter/inter-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/inter/inter-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/inter/inter-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/jetbrains-mono/jetbrains-mono-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/jetbrains-mono/jetbrains-mono-600.woff2') format('woff2');
+}
+
+:root {
+  /* Brand Palette */
+  --color-primary: #0B1F3A;        /* Deep Navy: headers, hero, authority */
+  --color-primary-dark: #071324;   /* Ultra Navy */
+  --color-secondary: #1E5EFF;      /* Royal Blue: CTAs, active focus, primary links */
+  --color-secondary-hover: #1548CC;
+  --color-secondary-subtle: rgba(30, 94, 255, 0.08);
+
+  /* Accents */
+  --color-success: #00B87C;        /* Emerald: credits, verified, success badges */
+  --color-success-bg: rgba(0, 184, 124, 0.1);
+  --color-warning: #F5A623;        /* Amber: pending, high risk alerts */
+  --color-warning-bg: rgba(245, 166, 35, 0.12);
+  --color-danger: #E5484D;         /* Crimson: debits, critical alerts, errors */
+  --color-danger-bg: rgba(229, 72, 77, 0.1);
+  --color-info: #0284C7;           /* Sky Blue */
+  --color-info-bg: rgba(2, 132, 199, 0.1);
+
+  /* Neutrals (Light Mode Default) */
+  --color-neutral-900: #0F172A;
+  --color-neutral-700: #334155;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-50:  #F8FAFC;
+  --color-white:       #FFFFFF;
+
+  /* Semantic Theme Mappings (Light Mode) */
+  --bg-page: var(--color-neutral-50);
+  --bg-app: var(--color-neutral-50);
+  --bg-surface: var(--color-white);
+  --bg-surface-elevated: var(--color-white);
+  --bg-subtle: var(--color-neutral-100);
+  --bg-glass: rgba(255, 255, 255, 0.85);
+
+  --border-subtle: var(--color-neutral-200);
+  --border-strong: #CBD5E1;
+
+  --text-primary: var(--color-neutral-900);
+  --text-secondary: var(--color-neutral-700);
+  --text-muted: var(--color-neutral-400);
+  --text-inverse: var(--color-white);
+
+  --brand-primary: var(--color-primary);
+  --brand-secondary: var(--color-secondary);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Spacing Scale (8px grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;       /* inputs, buttons */
+  --radius-lg: 10px;      /* cards */
+  --radius-xl: 16px;      /* modals, hero panels */
+  --radius-full: 9999px;  /* pills, badges, avatars */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --shadow-focus: 0 0 0 2px #FFFFFF, 0 0 0 4px var(--color-secondary);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Dark Mode Overrides
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg-page: #0B1220;               /* Deep Dark SOC / Fintech Navy */
+  --bg-surface: #111827;            /* Elevate 1 */
+  --bg-surface-elevated: #1F2937;   /* Elevate 2 */
+  --bg-subtle: #1A2234;
+  --bg-glass: rgba(17, 24, 39, 0.85);
+
+  --border-subtle: #1F2937;
+  --border-strong: #374151;
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-inverse: #0F172A;
+
+  --brand-primary: #1E5EFF;
+  --brand-secondary: #3B82F6;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.55);
+  --shadow-focus: 0 0 0 2px #0B1220, 0 0 0 4px #3B82F6;
+}

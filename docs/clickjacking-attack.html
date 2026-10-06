@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adversary Exploit PoC: UI Redressing (Clickjacking)</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0F172A;
+            color: #F8FAFC;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        h1 { color: #EF4444; margin-top: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 8px; }
+        .badge { background: #7F1D1D; color: #FCA5A5; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .scenario-box { background: #0F172A; border-left: 4px solid #F59E0B; padding: 1rem; border-radius: 4px; margin: 1.5rem 0; font-size: 0.9rem; }
+        .frame-sandbox {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            background: #020617;
+            border: 2px dashed #DC2626;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .decoy-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(220, 38, 38, 0.9);
+            color: #FFFFFF;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 700;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Adversary PoC: Clickjacking / UI Redressing <span class="badge">ATTACK SIMULATION</span></h1>
+
+        <div class="scenario-box">
+            <strong>Attack Vector Scenario:</strong><br>
+            An attacker embeds <code>http://127.0.0.1:8080/frontend/transfer.html</code> inside a transparent or deceptive iframe layer.<br>
+            The attacker lures the victim into clicking a decoy button ("Claim Free Gift!"), which is visually aligned directly over the banking portal's "Confirm Transfer" CTA.
+        </div>
+
+        <h3>Attempted Iframe Embedding Sandbox:</h3>
+        <p style="font-size: 0.85rem; color: #94A3B8;">The red dashed box below attempts to frame the SecureBank transfer page:</p>
+
+        <div class="frame-sandbox">
+            <div class="decoy-layer">🎁 Click here to claim your $1,000 reward! (Decoy Button)</div>
+            <iframe id="targetFrame" src="http://127.0.0.1:8080/frontend/transfer.html"></iframe>
+        </div>
+
+        <h3 style="margin-top: 2rem; color: #10B981;">🛡️ Why This Attack Fails (SecureBank Mitigation):</h3>
+        <ol style="font-size: 0.9rem; color: #94A3B8;">
+            <li><strong>X-Frame-Options: DENY:</strong> Server sends <code>X-Frame-Options: DENY</code> on all responses. The browser strictly refuses to render the page inside any frame, iframe, or object tag regardless of origin.</li>
+            <li><strong>CSP frame-ancestors 'none':</strong> Content-Security-Policy 2.0 directive reinforces frame protection at the W3C standard level, overriding legacy browser behaviors.</li>
+            <li><strong>Browser Enforcement:</strong> If you open DevTools Console (`F12`), you will see the browser security log:<br>
+                <code style="color: #F87171;">Refused to display 'http://127.0.0.1:8080/frontend/transfer.html' in a frame because it set 'X-Frame-Options' to 'DENY'.</code>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

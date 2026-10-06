@@ -1,0 +1,34 @@
+# ===============================================================
+# Secure Banking Portal - Root Apache Server Configuration
+# ===============================================================
+
+# Disable directory browsing/indexing
+Options -Indexes
+
+# Set default landing page
+DirectoryIndex frontend/index.html index.php index.html
+
+# Prevent access to hidden files and version control metadata
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Block access to database dump files and system logs
+<FilesMatch "\.(sql|log|ini|sh|bak)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Enforce UTF-8 charset
+AddDefaultCharset UTF-8

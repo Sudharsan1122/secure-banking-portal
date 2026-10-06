@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Beneficiary | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="mfa-container">
+        <main class="mfa-card" id="main-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                <span class="badge badge-info">Step 2: Payee Authorization</span>
+                <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+
+            <!-- SVG 48px Royal Blue Shield Icon -->
+            <div class="mfa-icon-wrap" aria-hidden="true">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <polyline points="9 11 12 14 22 4"/>
+                </svg>
+            </div>
+
+            <h1 class="h2" style="margin-bottom: var(--space-1);">2-Step Payee Verification</h1>
+            <p class="body" style="color: var(--text-muted); margin-bottom: var(--space-4);">
+                Enter the 6-digit confirmation code generated for this beneficiary
+            </p>
+
+            <!-- Academic Simulation Box -->
+            <div id="demoOtpAlert" class="card" style="display: none; background-color: var(--bg-subtle); border-style: dashed; padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4); text-align: left; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--color-success); text-transform: uppercase;">
+                        Simulated Payee OTP
+                    </div>
+                    <div style="font-size: 0.8125rem; color: var(--text-muted); margin-top: 2px;">
+                        Code: <code id="demoOtpValue" class="mono" style="font-size: 1.125rem; font-weight: 700; color: var(--color-secondary);">------</code>
+                    </div>
+                </div>
+                <button type="button" id="autofillBtn" class="btn btn-secondary btn-sm">
+                    Auto-fill
+                </button>
+            </div>
+
+            <form id="verifyForm" autocomplete="off" novalidate>
+                <!-- 6 Separate OTP Boxes -->
+                <div class="otp-inputs" aria-label="Enter 6-digit OTP">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" autofocus aria-label="Digit 1">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 2">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 3">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 4">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 5">
+                    <input type="text" class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Digit 6">
+                </div>
+
+                <button type="submit" id="submitVerifyBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: var(--space-4);">
+                    <span>Verify & Authorize Payee</span>
+                </button>
+            </form>
+
+            <div style="margin-top: var(--space-6); font-size: 0.875rem;">
+                <a href="beneficiaries.html" style="color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    <span>Back to Beneficiaries</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/verify_beneficiary.js"></script>
+</body>
+</html>

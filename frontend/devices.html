@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trusted Devices & Sessions | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Sticky 64px Header -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <a href="dashboard.html" class="app-brand">
+                <img src="../images/logo.svg" alt="SecureBank Logo" height="32">
+            </a>
+            <nav class="app-nav" aria-label="Main Navigation">
+                <a href="dashboard.html" class="app-nav-link">Dashboard</a>
+                <a href="transfer.html" class="app-nav-link">Transfer</a>
+                <a href="transactions.html" class="app-nav-link">Transactions</a>
+                <a href="beneficiaries.html" class="app-nav-link">Beneficiaries</a>
+                <a href="schedule.html" class="app-nav-link">Recurring</a>
+                <a href="devices.html" class="app-nav-link active">Devices</a>
+                <a href="profile.html" class="app-nav-link">Security Profile</a>
+            </nav>
+        </div>
+
+        <div class="app-header-right">
+            <!-- Theme Toggle -->
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+
+            <!-- Notifications Bell -->
+            <a href="notifications.html" class="btn btn-ghost btn-sm btn-icon notification-btn" aria-label="Notifications" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span id="unreadNotifBadge" class="notification-badge-dot" style="display: none;"></span>
+            </a>
+
+            <button type="button" id="logoutBtn" class="btn btn-secondary btn-sm">Sign Out</button>
+        </div>
+    </header>
+
+    <main class="app-main" id="main-content" style="max-width: 860px;">
+        <div class="welcome-strip">
+            <div>
+                <h1 class="welcome-greeting">Trusted Devices & Sessions</h1>
+                <div class="welcome-date">Privacy-preserving device fingerprinting and real-time session termination</div>
+            </div>
+            <div>
+                <span id="deviceCountBadge" class="badge badge-info">0 Registered</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title" style="font-size: 1.05rem;">Active Enrolled Devices</h2>
+                <span class="caption">B8 Privacy-Preserving Fingerprinting</span>
+            </div>
+            <div id="deviceListContainer" class="card-body">
+                <div style="padding: var(--space-8); text-align: center; color: var(--text-muted);">
+                    Loading enrolled client devices...
+                </div>
+            </div>
+            <div class="card-footer" style="font-size: 0.75rem; color: var(--text-muted); justify-content: space-between;">
+                <span>🛡️ SHA-256 deterministic entropy hash over platform, browser, and subnet</span>
+                <span>Immediate revocation upon termination</span>
+            </div>
+        </div>
+    </main>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/devices.js"></script>
+</body>
+</html>

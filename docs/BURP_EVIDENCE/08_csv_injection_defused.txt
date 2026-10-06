@@ -1,0 +1,52 @@
+================================================================================
+BURP SUITE EVIDENCE ITEM 08: CSV FORMULA INJECTION (CWE-1236) NEUTRALIZATION
+================================================================================
+Vulnerability: Improper Neutralization of Formula Elements in CSV (CWE-1236)
+Target Endpoint: GET /api/export_statement.php?format=csv&start_date=2026-01-01&end_date=2026-06-01
+Tool: Burp Suite Repeater
+Attack Vector: Dynamic Excel DDE Execution Payload (=cmd|'/C calc'!A0) seeded in remark
+Defensive Control: Mandatory Leading Apostrophe Prefixing on Sensitive Trigger Characters (=, +, -, @, \t, \r)
+
+--------------------------------------------------------------------------------
+RAW HTTP REQUEST (Burp Repeater):
+--------------------------------------------------------------------------------
+GET /api/export_statement.php?format=csv&start_date=2026-01-01&end_date=2026-06-01 HTTP/1.1
+Host: 127.0.0.1:8080
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Gecko/20100101
+Accept: text/csv,application/octet-stream
+Cookie: PHPSESSID=9f4a8b7c6d5e4f3a2b1c0d9e8f7a6b5c
+Connection: close
+
+--------------------------------------------------------------------------------
+RAW HTTP RESPONSE (Server Defense):
+--------------------------------------------------------------------------------
+HTTP/1.1 200 OK
+Date: Wed, 23 Sep 2026 04:23:12 GMT
+Server: Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-9a0b1c2d3e4f5a6b7c8d9e0f'; style-src 'self' 'nonce-9a0b1c2d3e4f5a6b7c8d9e0f'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+Content-Type: text/csv; charset=UTF-8
+Content-Disposition: attachment; filename="statement_1_20260923.csv"
+Connection: close
+Content-Length: 382
+
+Date,Type,Amount,Remark,Category,Status
+"2026-05-10 14:22:18","Debit","250.00","'=cmd|'/C calc'!A0","Transfer","completed"
+"2026-05-12 09:15:02","Debit","100.00","'+10+20 (Formula Sum)","Bills","completed"
+"2026-05-15 18:30:45","Debit","50.00","'-50*2 (Formula Mult)","Food","completed"
+"2026-05-20 11:00:19","Credit","1500.00","Standard benign salary","Salary","completed"
+
+--------------------------------------------------------------------------------
+SECURITY MITIGATION ANALYSIS:
+--------------------------------------------------------------------------------
+1. Threat Vector: In vulnerable spreadsheet applications (Microsoft Excel, LibreOffice Calc),
+   cells beginning with '=', '+', '-', or '@' are parsed as dynamic formulas or DDE execution
+   commands, allowing attackers to execute arbitrary system binaries when victims open exported CSVs.
+2. Sanitization Logic (`security/csv_safe.php` & `api/export_statement.php`):
+     `if (preg_match('/^[=\+\-@\t\r]/', $value)) { return "'" . $value; }`
+3. Neutralization Effect: Notice row 1 of the output:
+     `"'=cmd|'/C calc'!A0"`
+   The leading single quote forces the spreadsheet parser to treat the cell as raw string literals.
+   No calculations, external network calls, or OS commands are executed.

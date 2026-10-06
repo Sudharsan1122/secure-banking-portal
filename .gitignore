@@ -1,0 +1,39 @@
+# Operating System Artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+
+# Editor & IDE Directories
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Environment & Local Secrets
+.env
+.env.local
+.env.*.local
+
+# Temporary Runtime & Storage Files
+storage/statements/*.csv
+storage/statements/*.pdf
+storage/avatars/temp_*
+storage/cache/*
+logs/*.txt
+scratch/
+*.log
+
+# Composer Dependencies (if added)
+/vendor/*
+!/vendor/tcpdf/
+!/vendor/tcpdf/tcpdf.php
+
+# Test Artifacts & Code Coverage
+coverage/
+.phpunit.result.cache

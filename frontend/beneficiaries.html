@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beneficiaries Directory | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Sticky 64px Header -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <a href="dashboard.html" class="app-brand">
+                <img src="../images/logo.svg" alt="SecureBank Logo" height="32">
+            </a>
+            <nav class="app-nav" aria-label="Main Navigation">
+                <a href="dashboard.html" class="app-nav-link">Dashboard</a>
+                <a href="transfer.html" class="app-nav-link">Transfer</a>
+                <a href="transactions.html" class="app-nav-link">Transactions</a>
+                <a href="beneficiaries.html" class="app-nav-link active">Beneficiaries</a>
+                <a href="schedule.html" class="app-nav-link">Recurring</a>
+                <a href="devices.html" class="app-nav-link">Devices</a>
+                <a href="profile.html" class="app-nav-link">Security Profile</a>
+            </nav>
+        </div>
+
+        <div class="app-header-right">
+            <!-- Theme Toggle -->
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+
+            <!-- Notifications Bell -->
+            <a href="notifications.html" class="btn btn-ghost btn-sm btn-icon notification-btn" aria-label="Notifications" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span id="unreadNotifBadge" class="notification-badge-dot" style="display: none;"></span>
+            </a>
+
+            <button type="button" id="logoutBtn" class="btn btn-secondary btn-sm">Sign Out</button>
+        </div>
+    </header>
+
+    <main class="app-main" id="main-content">
+        <div class="welcome-strip">
+            <div>
+                <h1 class="welcome-greeting">Trusted Payee Directory</h1>
+                <div class="welcome-date">2-Step verified counterparties for swift and secure fund transfers</div>
+            </div>
+            <div style="display: flex; gap: var(--space-3); align-items: center;">
+                <span class="badge badge-info" id="bCountBadge">0 Enrolled</span>
+                <button type="button" id="openAddModalBtn" class="btn btn-primary btn-sm">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Enroll Beneficiary</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 3-Column Beneficiary Card Grid -->
+        <div class="beneficiary-grid" id="beneficiaryGridContainer" aria-label="Beneficiaries list">
+            <div class="card text-muted" style="padding: var(--space-8); text-align: center; grid-column: 1 / -1;">
+                Loading verified payee directory...
+            </div>
+        </div>
+    </main>
+
+    <!-- Enroll Beneficiary Accessible Modal -->
+    <div id="addBeneficiaryModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="addModalTitle" aria-hidden="true">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="addModalTitle" class="modal-title">Enroll New Payee</h3>
+                <button type="button" class="modal-close" id="closeAddModalBtn" aria-label="Close dialog">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <form id="addBeneficiaryForm">
+                <div class="modal-body">
+                    <p style="font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: var(--space-4);">
+                        Adding a new payee requires 2-step simulated OTP verification before funds can be routed.
+                    </p>
+
+                    <div class="field">
+                        <label for="bName" class="field-label">Payee Full Name</label>
+                        <input type="text" id="bName" class="field-input" placeholder="e.g. Alice Smith" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="bAccount" class="field-label">Account Number</label>
+                        <input type="text" id="bAccount" class="field-input mono" placeholder="ACC-USER-1003" required>
+                        <span class="field-hint">Registered bank account identifier</span>
+                    </div>
+
+                    <div class="field">
+                        <label for="bBank" class="field-label">Financial Institution</label>
+                        <input type="text" id="bBank" class="field-input" placeholder="e.g. Secure National Bank" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" id="cancelAddModalBtn">Cancel</button>
+                    <button type="submit" id="addBtn" class="btn btn-primary">
+                        <span>Enroll & Proceed to OTP</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/components/modal.js"></script>
+    <script src="../js/beneficiaries.js"></script>
+</body>
+</html>

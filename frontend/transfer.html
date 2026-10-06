@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Money | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Sticky 64px Header -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <a href="dashboard.html" class="app-brand">
+                <img src="../images/logo.svg" alt="SecureBank Logo" height="32">
+            </a>
+            <nav class="app-nav" aria-label="Main Navigation">
+                <a href="dashboard.html" class="app-nav-link">Dashboard</a>
+                <a href="transfer.html" class="app-nav-link active">Transfer</a>
+                <a href="transactions.html" class="app-nav-link">Transactions</a>
+                <a href="beneficiaries.html" class="app-nav-link">Beneficiaries</a>
+                <a href="schedule.html" class="app-nav-link">Recurring</a>
+                <a href="devices.html" class="app-nav-link">Devices</a>
+                <a href="profile.html" class="app-nav-link">Security Profile</a>
+            </nav>
+        </div>
+
+        <div class="app-header-right">
+            <!-- Theme Toggle -->
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+
+            <!-- Notifications Bell -->
+            <a href="notifications.html" class="btn btn-ghost btn-sm btn-icon notification-btn" aria-label="Notifications" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span id="unreadNotifBadge" class="notification-badge-dot" style="display: none;"></span>
+            </a>
+
+            <button type="button" id="logoutBtn" class="btn btn-secondary btn-sm">Sign Out</button>
+        </div>
+    </header>
+
+    <main class="app-main" id="main-content">
+        <div class="welcome-strip" style="margin-bottom: var(--space-6);">
+            <div>
+                <h1 class="welcome-greeting">Fund Transfer</h1>
+                <div class="welcome-date">Atomic execution with pessimistic row-locking & velocity checks</div>
+            </div>
+            <div>
+                <span class="badge badge-info" style="font-size: 0.8125rem; padding: 6px 12px;">
+                    Available: <strong id="currentBalance" class="mono" style="margin-left: 4px;">$0.00 USD</strong>
+                </span>
+            </div>
+        </div>
+
+        <!-- Two-Column Transfer Grid (60% / 40%) -->
+        <div class="transfer-grid">
+            <!-- Left Form Card (60%) -->
+            <div class="card">
+                <div class="stepper-header">
+                    <div class="step-indicator">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                        <span>Multi-Step Transfer Authorization</span>
+                    </div>
+                    <span class="caption">Zero-Trust Protected</span>
+                </div>
+
+                <form id="transferForm" autocomplete="off" novalidate>
+                    <input type="hidden" name="csrf_token" id="csrfTokenHidden" value="">
+
+                    <!-- Step 1: Source Account -->
+                    <div class="field">
+                        <label for="fromAccountSelect" class="field-label">
+                            <span>Step 1: Debit Source Account</span>
+                            <span class="caption" style="color: var(--color-secondary);">Verified Owner</span>
+                        </label>
+                        <select id="fromAccountSelect" class="field-input">
+                            <option value="">Primary Account ($0.00)</option>
+                        </select>
+                        <span class="field-hint">Select which portfolio sub-account to debit</span>
+                    </div>
+
+                    <!-- Step 2: Payee / Beneficiary -->
+                    <div class="field">
+                        <label for="beneficiarySelect" class="field-label">
+                            <span>Step 2: Recipient Payee</span>
+                            <a href="beneficiaries.html" class="caption">+ Add Payee</a>
+                        </label>
+                        <select id="beneficiarySelect" class="field-input" style="margin-bottom: var(--space-2);">
+                            <option value="">-- Choose a verified payee (or enter account below) --</option>
+                        </select>
+                        <div class="field-group">
+                            <input type="text" id="accountNumber" class="field-input mono" placeholder="ACC-USER-XXXX" required>
+                        </div>
+                        <span class="field-hint">Destination account identifier (strictly validated against registered accounts)</span>
+                    </div>
+
+                    <!-- Step 3: Amount with prefix and Max button -->
+                    <div class="field">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label for="amount" class="field-label">Step 3: Transfer Amount</label>
+                            <button type="button" id="maxAmountBtn" class="caption" style="background: none; border: none; color: var(--color-secondary); font-weight: 600; cursor: pointer;">Max Balance</button>
+                        </div>
+                        <div class="field-group">
+                            <input type="number" id="amount" class="field-input tabular-nums" step="0.01" min="0.01" placeholder="0.00" style="font-size: 1.25rem; font-weight: 700; font-family: var(--font-mono); height: 50px;" required>
+                        </div>
+                        <div id="velocityWarning" class="alert alert-warning" style="display: none; margin-top: var(--space-2); padding: 8px 12px; font-size: 0.75rem;">
+                            ⚠️ Approaching daily velocity limit threshold!
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Category Chips -->
+                    <div class="field">
+                        <label class="field-label">Step 4: Expense Category & Note</label>
+                        <input type="hidden" id="categorySelect" value="Transfer">
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-3);" id="categoryChips">
+                            <button type="button" class="chip active" data-category="Transfer">💸 Transfer</button>
+                            <button type="button" class="chip" data-category="Food">🍔 Food</button>
+                            <button type="button" class="chip" data-category="Bills">📄 Bills</button>
+                            <button type="button" class="chip" data-category="Salary">💼 Salary</button>
+                            <button type="button" class="chip" data-category="Shopping">🛍️ Shopping</button>
+                            <button type="button" class="chip" data-category="Transport">🚗 Transport</button>
+                            <button type="button" class="chip" data-category="Entertainment">🎬 Entertainment</button>
+                            <button type="button" class="chip" data-category="Utilities">💡 Utilities</button>
+                            <button type="button" class="chip" data-category="Other">📦 Other</button>
+                        </div>
+
+                        <div class="field-group">
+                            <input type="text" id="remark" class="field-input" placeholder="e.g. Project retainer, dining split">
+                        </div>
+                        <span class="field-hint">Stored raw in database; safely sanitized on output</span>
+                    </div>
+
+                    <!-- Step 5: Review Summary Card -->
+                    <div class="card" style="background-color: var(--bg-subtle); padding: var(--space-4); margin-bottom: var(--space-5);">
+                        <div style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: var(--space-2);">
+                            Step 5: Transaction Summary
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8125rem; margin-bottom: 4px;">
+                            <span style="color: var(--text-secondary);">Estimated Processing Fee:</span>
+                            <span class="mono" style="color: var(--color-success); font-weight: 600;">$0.00 (Instant)</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8125rem;">
+                            <span style="color: var(--text-secondary);">Security Verification:</span>
+                            <span style="color: var(--text-primary); font-weight: 500;">Pessimistic Row Lock</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg">
+                        <span id="submitBtnText">Authorize & Send Transfer</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Side Panel (40%) -->
+            <div>
+                <!-- Velocity Limits Card -->
+                <div class="card" style="margin-bottom: var(--space-6);">
+                    <div class="card-header">
+                        <h2 class="card-title" style="font-size: 1rem;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <span>Transfer Limits</span>
+                        </h2>
+                        <span class="badge badge-success">Enforced</span>
+                    </div>
+                    <div class="card-body" style="font-size: 0.8125rem; display: flex; flex-direction: column; gap: var(--space-4);">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="color: var(--text-secondary);">Single Transfer Limit:</span>
+                                <span class="mono" id="limitSingleDisplay" style="font-weight: 600;">$100,000.00</span>
+                            </div>
+                            <div class="limit-progress-bar"><div class="limit-progress-fill" style="width: 15%;"></div></div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="color: var(--text-secondary);">Daily Aggregate Limit:</span>
+                                <span class="mono" id="limitDailyDisplay" style="font-weight: 600;">$200,000.00</span>
+                            </div>
+                            <div class="limit-progress-bar"><div class="limit-progress-fill" style="width: 35%;"></div></div>
+                        </div>
+
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="color: var(--text-secondary);">30-Day Rolling Limit:</span>
+                                <span class="mono" id="limitMonthlyDisplay" style="font-weight: 600;">$1,000,000.00</span>
+                            </div>
+                            <div class="limit-progress-bar"><div class="limit-progress-fill" style="width: 20%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Note Card -->
+                <div class="card" style="margin-bottom: var(--space-6);">
+                    <div class="card-header">
+                        <h2 class="card-title" style="font-size: 1rem;">Security Protocol</h2>
+                    </div>
+                    <div class="card-body" style="font-size: 0.8125rem; color: var(--text-secondary); line-height: 1.6;">
+                        <p>Every transaction executes within an isolated database transaction using <code>SELECT ... FOR UPDATE</code> deterministic row-level locks, preventing race conditions and double-spending attacks.</p>
+                        <div style="margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--border-subtle); font-size: 0.75rem; color: var(--text-muted);">
+                            🛡️ Cryptographic CSRF token attached to all payload headers.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collapsible Demo Controls (Refinement 4) -->
+                <div class="collapsible">
+                    <button type="button" class="collapsible-trigger" data-collapsible-toggle>
+                        <span>🧪 Demo Controls & Security Payloads</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="collapsible-content">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: var(--space-2);">
+                            Click to populate test payloads for security defense verification:
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <button type="button" id="demoXssPayloadBtn" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; justify-content: flex-start;">
+                                <span>Payload: Stored XSS Script Tag</span>
+                            </button>
+                            <button type="button" id="demoOverflowPayloadBtn" class="btn btn-secondary btn-sm" style="font-size: 0.7rem; justify-content: flex-start;">
+                                <span>Payload: Velocity Limit Breach ($150,000)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/transfer.js"></script>
+</body>
+</html>

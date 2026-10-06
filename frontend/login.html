@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login | SecureBank</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Left Hero Panel (60%) -->
+        <section class="auth-hero" aria-label="Brand Overview">
+            <div class="auth-hero-header">
+                <img src="../images/logo.svg" alt="SecureBank Logo" height="38">
+            </div>
+
+            <div class="auth-hero-body">
+                <h1 class="auth-hero-title">Banking engineered for absolute security.</h1>
+                <p class="auth-hero-desc">
+                    Experience zero-trust institutional security with hardware-backed encryption, cryptographic ledger verification, and real-time threat intelligence.
+                </p>
+                <div class="auth-hero-illustration">
+                    <img src="../images/illustrations/vault.svg" alt="Fintech Vault Security" style="width: 100%; height: auto;">
+                </div>
+            </div>
+
+            <div class="auth-trust-badges">
+                <div class="trust-badge-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>256-Bit Hardware AES</span>
+                </div>
+                <div class="trust-badge-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span>FIPS 140-2 Validated</span>
+                </div>
+                <div class="trust-badge-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Zero-Knowledge Ledger</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Form Panel (40%) -->
+        <main class="auth-form-side" id="main-content">
+            <div class="auth-card">
+                <div class="auth-card-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                        <span class="badge badge-info">Step 1 of 2</span>
+                        <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle theme">
+                            <span class="theme-icon">🌙</span>
+                        </button>
+                    </div>
+                    <h2 class="auth-card-title">Sign In</h2>
+                    <p class="auth-card-subtitle">Enter your registered username and master password</p>
+                </div>
+
+                <div id="errorAlert" class="alert alert-danger" style="display: none;" role="alert"></div>
+
+                <form id="loginForm" autocomplete="off" novalidate>
+                    <div class="field" id="usernameField">
+                        <label for="username" class="field-label">Username</label>
+                        <input type="text" id="username" class="field-input" placeholder="e.g. john_doe or admin" required autofocus>
+                        <div class="field-error" id="usernameError">Please enter your username.</div>
+                    </div>
+
+                    <div class="field" id="passwordField">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label for="password" class="field-label">Master Password</label>
+                            <a href="forgot-password.html" class="caption" style="color: var(--text-muted);">Forgot password?</a>
+                        </div>
+                        <div class="field-group">
+                            <input type="password" id="password" class="field-input" placeholder="••••••••••••" required>
+                            <button type="button" id="togglePasswordBtn" class="field-icon-btn" aria-label="Toggle password visibility">
+                                <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="field-error" id="passwordError">Please enter your password.</div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-5);">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="rememberDevice">
+                            <span>Remember this device</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary btn-block btn-lg">
+                        <span>Sign In</span>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <span>Don't have an account yet?</span>
+                    <a href="register.html" style="font-weight: 600; margin-left: 4px;">Open an Account</a>
+                </div>
+
+                <div style="margin-top: var(--space-6); padding: var(--space-3); background-color: var(--bg-subtle); border-radius: var(--radius-md); font-size: 0.75rem; color: var(--text-muted); border: 1px solid var(--border-subtle); line-height: 1.5;">
+                    <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--text-secondary); margin-bottom: 2px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <span>Security Defense Active</span>
+                    </div>
+                    Automated sliding-window throttling locks attempts after 5 failures. Successful credentials proceed to cryptographically bound MFA verification.
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/components/toast.js"></script>
+    <script src="../js/login.js"></script>
+</body>
+</html>

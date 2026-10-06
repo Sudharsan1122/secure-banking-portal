@@ -1,0 +1,46 @@
+================================================================================
+BURP SUITE EVIDENCE ITEM 10: BURP INTRUDER BRUTE-FORCE FUZZING LOG
+================================================================================
+Attack Type: Sniper Attack (Payload: Top 25 Common Passwords)
+Target Endpoint: POST /api/login.php
+Tool: Burp Suite Intruder v2024.1
+Target Account: john_doe (Valid User)
+Objective: Evaluate Sliding-Window Throttling & Progressive Lockout Tiers
+
+--------------------------------------------------------------------------------
+INTRUDER RESULTS TABLE:
+--------------------------------------------------------------------------------
+Payload # | Payload Value      | Status | Length | Response Time | Error / Message Received
+----------+--------------------+--------+--------+---------------+--------------------------------------------
+1         | 123456             | 401    | 64     | 72 ms         | Invalid credentials.
+2         | password           | 401    | 64     | 68 ms         | Invalid credentials.
+3         | 12345678           | 401    | 64     | 65 ms         | Invalid credentials.
+4         | qwerty             | 401    | 64     | 69 ms         | Invalid credentials.
+5         | 123456789          | 429    | 132    | 12 ms         | Account temporarily locked (5 min lock)
+6         | 12345              | 429    | 132    | 10 ms         | Account temporarily locked (5 min lock)
+7         | 111111             | 429    | 132    | 11 ms         | Account temporarily locked (5 min lock)
+8         | 1234567            | 429    | 132    | 9 ms          | Account temporarily locked (5 min lock)
+9         | dragon             | 429    | 132    | 10 ms         | Account temporarily locked (5 min lock)
+10        | 123123             | 429    | 141    | 11 ms         | Account locked for 30 minutes (Tier 2)
+11        | baseball           | 429    | 141    | 10 ms         | Account locked for 30 minutes (Tier 2)
+12        | football           | 429    | 141    | 9 ms          | Account locked for 30 minutes (Tier 2)
+13        | monkey             | 429    | 141    | 10 ms         | Account locked for 30 minutes (Tier 2)
+14        | letmein            | 429    | 141    | 11 ms         | Account locked for 30 minutes (Tier 2)
+15        | shadow             | 429    | 152    | 10 ms         | Account permanently locked (Tier 3 Admin)
+16        | master             | 429    | 152    | 9 ms          | Account permanently locked (Tier 3 Admin)
+17        | 666666             | 429    | 152    | 8 ms          | Account permanently locked (Tier 3 Admin)
+18        | trustno1           | 429    | 152    | 9 ms          | Account permanently locked (Tier 3 Admin)
+19        | sunshine           | 429    | 152    | 11 ms         | Account permanently locked (Tier 3 Admin)
+20        | princess           | 429    | 152    | 8 ms          | Account permanently locked (Tier 3 Admin)
+
+--------------------------------------------------------------------------------
+OBSERVATIONS & DEFENSIVE ADVANTAGES:
+--------------------------------------------------------------------------------
+1. Fast-Path Dropping: Notice response times drop from ~68 ms (Bcrypt verification) to ~10 ms
+   once the rate limit gate triggers. This prevents password hashing CPU exhaustion (Denial of Service).
+2. Progressive Escalation:
+   - Request 5 triggers Tier 1 (5-minute cooldown)
+   - Request 10 triggers Tier 2 (30-minute cooldown)
+   - Request 15 triggers Tier 3 (Account marked status = 'frozen' in database)
+3. Mitigation of Automated Password Cracking: An attacker attempting a 100,000-word dictionary attack
+   is stopped cold after 5 attempts, with further attempts rejected in 10 ms without executing Bcrypt.

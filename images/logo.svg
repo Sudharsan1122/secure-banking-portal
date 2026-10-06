@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56" fill="none">
+  <!-- Shield Icon Mark -->
+  <g transform="translate(4, 4)">
+    <rect width="48" height="48" rx="12" fill="url(#shield_grad)"/>
+    <!-- Outer Shield Contour -->
+    <path d="M24 10L36 15.5V24.5C36 32 30.8 38.8 24 40.5C17.2 38.8 12 32 12 24.5V15.5L24 10Z" 
+          stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Inner Keyhole Vault Node -->
+    <circle cx="24" cy="22" r="3.5" fill="#FFFFFF"/>
+    <path d="M22.5 24.5L21.5 30H26.5L25.5 24.5H22.5Z" fill="#FFFFFF"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="64" y="32" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="22" font-weight="700" letter-spacing="-0.03em" fill="currentColor">
+    Secure<tspan fill="#1E5EFF">Bank</tspan>
+  </text>
+  <text x="64" y="45" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="10.5" font-weight="500" letter-spacing="0.08em" text-transform="uppercase" fill="#94A3B8">
+    Banking, Secured.
+  </text>
+  <defs>
+    <linearGradient id="shield_grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1E5EFF"/>
+      <stop offset="1" stop-color="#0B1F3A"/>
+    </linearGradient>
+  </defs>
+</svg>
