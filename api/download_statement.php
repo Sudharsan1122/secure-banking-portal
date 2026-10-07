@@ -36,8 +36,8 @@ enforce_endpoint_rate_limit('/api/download_statement.php');
 $currentUser = require_auth();
 $userId = $currentUser['id'];
 
-$rawDate = canonicalize_input(trim($_GET['date'] ?? $_POST['date'] ?? ''));
-$rawPath = isset($_GET['file']) ? canonicalize_input($_GET['file']) : null;
+$rawDate = canonicalize_input(trim($_GET['statement_month'] ?? $_GET['date'] ?? $_GET['month'] ?? $_POST['statement_month'] ?? $_POST['date'] ?? ''));
+$rawPath = isset($_GET['file']) ? canonicalize_input($_GET['file']) : (isset($_GET['filename']) ? canonicalize_input($_GET['filename']) : null);
 
 /**
  * ===============================================================
@@ -49,49 +49,57 @@ $rawPath = isset($_GET['file']) ? canonicalize_input($_GET['file']) : null;
  *   readfile("statements/" . $file); // Leaks sensitive server files!
  * 
  * SECURE IMPLEMENTATION BELOW:
- * 1) Reject any direct file path query
- * 2) Validate sanitized components with strict regex
- * 3) Construct filename programmatically with internal session context
- * 4) Resolve canonical path via realpath() and verify directory prefix
+ * 1) Scan all request parameters for relative traversal patterns (../, ..\, %2e%2e, null-bytes)
+ * 2) Reject any direct file path query and log high-severity SIEM DIRECTORY_TRAVERSAL event
+ * 3) Validate sanitized components with strict regex whitelist (YYYY-MM)
+ * 4) Construct filename programmatically with internal session context
+ * 5) Resolve canonical path via realpath() and verify directory prefix
  * ===============================================================
  */
 
-// If an attacker attempts to pass a raw 'file' parameter with traversal characters:
-if ($rawPath !== null) {
-    if (str_contains($rawPath, '..') || str_contains($rawPath, '/') || str_contains($rawPath, '\\') || str_contains($rawPath, "\0")) {
-        log_security_event(
-            $userId,
-            'DIRECTORY_TRAVERSAL',
-            'BLOCKED',
-            'Path traversal sequence detected in file parameter: ' . mb_substr($rawPath, 0, 100)
-        );
-        http_response_code(400);
-        header('Content-Type: application/json');
-        echo json_encode([
-            'status'  => 'error',
-            'code'    => 'DIRECTORY_TRAVERSAL_BLOCKED',
-            'message' => 'Path traversal pattern detected and blocked by security firewall.'
-        ]);
-        exit;
+// Comprehensive Traversal Signature Detection across all incoming parameters
+$traversalDetected = false;
+$traversalParam = '';
+$traversalVal = '';
+
+foreach (array_merge($_GET, $_POST) as $paramKey => $paramVal) {
+    if (is_string($paramVal)) {
+        $decoded = urldecode($paramVal);
+        if (str_contains($paramVal, '..') || str_contains($paramVal, '/') || str_contains($paramVal, '\\') || str_contains($paramVal, "\0") ||
+            str_contains($decoded, '..') || str_contains($decoded, '/') || str_contains($decoded, '\\') || str_contains($decoded, "\0")) {
+            $traversalDetected = true;
+            $traversalParam = $paramKey;
+            $traversalVal = $paramVal;
+            break;
+        }
     }
+}
+
+if ($traversalDetected) {
+    log_security_event(
+        $userId,
+        'DIRECTORY_TRAVERSAL',
+        'BLOCKED',
+        "Path traversal sequence detected in parameter '{$traversalParam}': " . mb_substr($traversalVal, 0, 100),
+        'high'
+    );
+    http_response_code(400);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'status'  => 'error',
+        'code'    => 'DIRECTORY_TRAVERSAL_BLOCKED',
+        'message' => 'Path traversal pattern detected and blocked by security firewall.'
+    ]);
+    exit;
 }
 
 // 1. Strict Regex Validation on YYYY-MM
 if (!validate_statement_date($rawDate)) {
-    // If traversal sequences are found in date parameter, log security incident
-    if (str_contains($rawDate, '..') || str_contains($rawDate, '/') || str_contains($rawDate, '\\')) {
-        log_security_event(
-            $userId,
-            'DIRECTORY_TRAVERSAL',
-            'BLOCKED',
-            'Path traversal sequence detected in date parameter: ' . mb_substr($rawDate, 0, 100)
-        );
-    }
-
     http_response_code(400);
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'status'  => 'error',
+        'code'    => 'INVALID_DATE_FORMAT',
         'message' => 'Invalid statement date format. Expected YYYY-MM (e.g. 2026-01).'
     ]);
     exit;
