@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broken Access Control Admin Lab — InsecureBank</title>
+    <link rel="stylesheet" href="../css/vuln_style.css">
+</head>
+<body>
+    <header class="vuln-navbar">
+        <a href="../index.html" class="vuln-brand">
+            <div class="vuln-logo">⚠️</div>
+            <div>
+                <h1>Insecure<span>Bank</span> &bull; Admin Console</h1>
+            </div>
+        </a>
+        <div class="vuln-status-pill">
+            <span class="status-dot"></span>
+            Broken Access Control Active
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html" class="nav-link">Hub</a>
+            <a href="login.html" class="nav-link">SQLi Login</a>
+            <a href="dashboard.html?user_id=1" class="nav-link">IDOR</a>
+            <a href="transfer.html" class="nav-link">CSRF</a>
+            <a href="statements.html" class="nav-link">Traversal</a>
+            <a href="upload.html" class="nav-link">Upload</a>
+            <a href="admin.html" class="nav-link active">Admin</a>
+            <a href="../../admin/dashboard.html" class="btn-switch-secure">🛡️ Test Secure Admin</a>
+        </nav>
+    </header>
+
+    <main class="vuln-container">
+        <div class="vuln-hero" style="text-align: left; margin-bottom: 1.5rem;">
+            <span class="severity-pill severity-high">High Severity (CVSS 8.8)</span>
+            <h2 style="margin-top: 0.5rem;">Broken Access Control (Unprotected Admin Routes)</h2>
+            <p>Target: <code>GET /vulnerable/frontend/admin.html</code> &bull; CWE-285 &bull; OWASP A01:2021</p>
+        </div>
+
+        <div class="lab-layout">
+            <!-- Left Panel: Unprotected Admin Controls -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>⚙️</span> Administrative System Actions
+                </div>
+                <div class="panel-subtitle">
+                    Notice: You accessed this page directly without any admin login session or authorization checks!
+                </div>
+
+                <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+                    <div style="background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08); padding: 1.25rem; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; color: #fff;">Clear All Transaction Audit Logs</div>
+                            <div style="font-size: 0.8rem; color: var(--text-dim);">Purges security audit records from the system</div>
+                        </div>
+                        <button type="button" class="btn-payload" onclick="simulateAdminAction('Audit Logs Cleared (Bypassed)')">
+                            Execute Action
+                        </button>
+                    </div>
+
+                    <div style="background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08); padding: 1.25rem; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; color: #fff;">Grant Administrator Role to User #2</div>
+                            <div style="font-size: 0.8rem; color: var(--text-dim);">Elevates customer privilege without super-admin approval</div>
+                        </div>
+                        <button type="button" class="btn-payload" onclick="simulateAdminAction('Privilege Escalated to Admin')">
+                            Escalate Role
+                        </button>
+                    </div>
+
+                    <div style="background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08); padding: 1.25rem; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; color: #fff;">Emergency Freeze Customer Accounts</div>
+                            <div style="font-size: 0.8rem; color: var(--text-dim);">Locks outgoing funds for all customer accounts</div>
+                        </div>
+                        <button type="button" class="btn-payload" onclick="simulateAdminAction('All Accounts Frozen')">
+                            Freeze Accounts
+                        </button>
+                    </div>
+                </div>
+
+                <div id="adminActionOutput" style="margin-top: 1.5rem; padding: 1rem; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--color-success); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-success); display: none;"></div>
+            </div>
+
+            <!-- Right Panel: Forensics -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔬</span> Access Control Forensics
+                </div>
+                <div class="panel-subtitle">
+                    Why role-based authorization (RBAC) must be enforced server-side.
+                </div>
+
+                <div class="diff-box">
+                    <div class="diff-title" style="color: var(--color-danger);">
+                        <span>❌</span> Missing Authorization (vulnerable/api/admin.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// ⚠️ NO ROLE CHECK
+// Directly executes privileged operation!
+execute_admin_command();
+                    </div>
+                </div>
+
+                <div class="diff-box secure">
+                    <div class="diff-title" style="color: var(--color-success);">
+                        <span>✅</span> Fortified Role-Based Guard (api/admin_users.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// 🛡️ SECURE: Mandatory role enforcement
+$user = require_auth();
+if ($user['role'] !== 'admin') {
+    log_security_event($user['id'], 'ACCESS_VIOLATION', 'BLOCKED');
+    die_json(403, 'Forbidden: Admin privilege required');
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function simulateAdminAction(actionName) {
+            const el = document.getElementById('adminActionOutput');
+            el.style.display = 'block';
+            el.textContent = '⚡ Success: ' + actionName + ' executed without administrative authentication!';
+        }
+    </script>
+</body>
+</html>

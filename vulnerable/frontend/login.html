@@ -1,11 +1,170 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Authentication Bypass Lab — InsecureBank</title>
+    <link rel="stylesheet" href="../css/vuln_style.css">
+</head>
 <body>
-    <h2>Insecure Login (Test SQLi here)</h2>
-    <form action="../api/login.php" method="POST">
-        Username: <input type="text" name="username" value="admin' OR '1'='1' -- "><br><br>
-        Password: <input type="password" name="password"><br><br>
-        <button type="submit">Login</button>
-    </form>
+    <header class="vuln-navbar">
+        <a href="../index.html" class="vuln-brand">
+            <div class="vuln-logo">⚠️</div>
+            <div>
+                <h1>Insecure<span>Bank</span> &bull; SQLi Lab</h1>
+            </div>
+        </a>
+        <div class="vuln-status-pill">
+            <span class="status-dot"></span>
+            Vulnerable Endpoint
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html" class="nav-link">Hub</a>
+            <a href="login.html" class="nav-link active">SQLi Login</a>
+            <a href="dashboard.html?user_id=1" class="nav-link">IDOR</a>
+            <a href="transfer.html" class="nav-link">CSRF</a>
+            <a href="search.html" class="nav-link">XSS</a>
+            <a href="statements.html" class="nav-link">Traversal</a>
+            <a href="../../frontend/login.html" class="btn-switch-secure">🛡️ Test Secure Login</a>
+        </nav>
+    </header>
+
+    <main class="vuln-container">
+        <div class="vuln-hero" style="text-align: left; margin-bottom: 1.5rem;">
+            <span class="severity-pill severity-critical">Critical Severity (CVSS 9.8)</span>
+            <h2 style="margin-top: 0.5rem;">SQL Injection (Authentication Bypass)</h2>
+            <p>Target: <code>POST /vulnerable/api/login.php</code> &bull; CWE-89 &bull; OWASP A03:2021</p>
+        </div>
+
+        <div class="lab-layout">
+            <!-- Left Panel: Interactive Login Form -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔑</span> Insecure Customer Login
+                </div>
+                <div class="panel-subtitle">
+                    Enter credentials or click any quick-inject payload pill below to test authentication bypass.
+                </div>
+
+                <form id="sqliLoginForm" action="../api/login.php" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="usernameInput">Username / Account ID</label>
+                        <input type="text" id="usernameInput" name="username" class="form-control" value="admin' OR '1'='1' -- " required autocomplete="off">
+                    </div>
+
+                    <!-- Quick Payloads -->
+                    <div class="form-group">
+                        <label class="form-label">⚡ Quick Payload Injectors (Click to apply):</label>
+                        <div class="payload-pills">
+                            <button type="button" class="btn-payload" onclick="injectPayload(\"admin' OR '1'='1' -- \")">
+                                💥 admin' OR '1'='1' -- 
+                            </button>
+                            <button type="button" class="btn-payload" onclick="injectPayload(\"' OR ''='\")">
+                                💥 ' OR ''='
+                            </button>
+                            <button type="button" class="btn-payload" onclick="injectPayload(\"alice' -- \")">
+                                💥 alice' -- 
+                            </button>
+                            <button type="button" class="btn-payload" onclick="injectPayload(\"admin\")" style="border-color: rgba(255,255,255,0.2); color: var(--text-muted);">
+                                👤 Normal (admin)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="passwordInput">Password</label>
+                        <input type="password" id="passwordInput" name="password" class="form-control" placeholder="Leave empty for SQLi bypass" autocomplete="off">
+                    </div>
+
+                    <button type="submit" class="btn-launch-exploit" style="width: 100%; margin-top: 1rem; font-size: 1rem; padding: 0.85rem;">
+                        ⚡ Submit Exploited Login Request
+                    </button>
+                </form>
+
+                <!-- Live Query Inspector -->
+                <div style="margin-top: 2rem;">
+                    <div class="terminal-header">
+                        <span>📡 Live Backend MySQL Query Inspector (Unescaped Concatenation)</span>
+                    </div>
+                    <div class="code-preview-box" id="liveQueryBox">
+                        SELECT * FROM users WHERE username = '<span class="highlight" id="queryUserHighlight">admin' OR '1'='1' -- </span>' AND password_hash = '<span id="queryPassHighlight"></span>'
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Architectural Forensics & Comparison -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔬</span> Architectural Code Forensics
+                </div>
+                <div class="panel-subtitle">
+                    Why this attack succeeds and how parameterization prevents it.
+                </div>
+
+                <div class="diff-box">
+                    <div class="diff-title" style="color: var(--color-danger);">
+                        <span>❌</span> Vulnerable Implementation (vulnerable/api/login.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// ⚠️ INSECURE: Direct concatenation
+$u = $_POST['username'];
+$p = $_POST['password'];
+$sql = "SELECT * FROM users 
+        WHERE username = '$u' 
+          AND password_hash = '$p'";
+$result = $conn->query($sql);
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #fda4af;">
+                        The single-quote terminates the string literal, and <code>OR '1'='1'</code> forces the condition to always evaluate to <b>TRUE</b>, while <code>-- </code> discards password verification.
+                    </p>
+                </div>
+
+                <div class="diff-box secure">
+                    <div class="diff-title" style="color: var(--color-success);">
+                        <span>✅</span> Fortified Implementation (api/login.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// 🛡️ SECURE: Prepared Statements with PDO
+$stmt = $pdo->prepare(
+    "SELECT * FROM users WHERE username = :u"
+);
+$stmt->execute([':u' => $username]);
+$user = $stmt->fetch();
+if ($user && password_verify($pass, $user['password_hash'])) { ... }
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #a7f3d0;">
+                        SQL engine treats user input strictly as inert string data, rendering SQL syntax manipulation impossible.
+                    </p>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: var(--radius-sm); font-size: 0.85rem;">
+                    <div style="font-weight: 700; color: var(--color-cyan); margin-bottom: 0.3rem;">💡 Live Verification Check:</div>
+                    When you click "Submit", MySQL evaluates the tautology, authenticates user ID 1 without a password, and redirects immediately to the Dashboard!
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const uInput = document.getElementById('usernameInput');
+        const pInput = document.getElementById('passwordInput');
+        const uHighlight = document.getElementById('queryUserHighlight');
+        const pHighlight = document.getElementById('queryPassHighlight');
+
+        function updateQuery() {
+            uHighlight.textContent = uInput.value || '';
+            pHighlight.textContent = pInput.value || '';
+        }
+
+        function injectPayload(payload) {
+            uInput.value = payload;
+            pInput.value = '';
+            updateQuery();
+        }
+
+        uInput.addEventListener('input', updateQuery);
+        pInput.addEventListener('input', updateQuery);
+        updateQuery();
+    </script>
 </body>
 </html>

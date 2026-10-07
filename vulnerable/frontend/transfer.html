@@ -1,16 +1,171 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- ⚠️ VULNERABILITY 8: CLICKJACKING (Missing X-Frame-Options) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF, Clickjacking & Stored XSS Lab — InsecureBank</title>
+    <link rel="stylesheet" href="../css/vuln_style.css">
 </head>
 <body>
-    <h2>Insecure Transfer (Test CSRF & Clickjacking here)</h2>
-    <form action="../api/transfer.php" method="POST">
-        Receiver ID: <input type="text" name="receiver" value="2"><br><br>
-        Amount: <input type="text" name="amount" value="1000"><br><br>
-        Remark: <input type="text" name="remark" value="<script>alert('Stored XSS')</script>"><br><br>
-        <!-- No CSRF Token! -->
-        <button type="submit">Transfer Money</button>
-    </form>
+    <header class="vuln-navbar">
+        <a href="../index.html" class="vuln-brand">
+            <div class="vuln-logo">⚠️</div>
+            <div>
+                <h1>Insecure<span>Bank</span> &bull; Transfer Lab</h1>
+            </div>
+        </a>
+        <div class="vuln-status-pill">
+            <span class="status-dot"></span>
+            CSRF & Stored XSS Active
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html" class="nav-link">Hub</a>
+            <a href="login.html" class="nav-link">SQLi Login</a>
+            <a href="dashboard.html?user_id=1" class="nav-link">IDOR</a>
+            <a href="transfer.html" class="nav-link active">CSRF & XSS</a>
+            <a href="search.html" class="nav-link">Search</a>
+            <a href="statements.html" class="nav-link">Traversal</a>
+            <a href="../../frontend/transfer.html" class="btn-switch-secure">🛡️ Test Secure Transfer</a>
+        </nav>
+    </header>
+
+    <main class="vuln-container">
+        <div class="vuln-hero" style="text-align: left; margin-bottom: 1.5rem;">
+            <span class="severity-pill severity-high">High Severity (CVSS 8.1)</span>
+            <h2 style="margin-top: 0.5rem;">CSRF, Clickjacking & Stored XSS Lab</h2>
+            <p>Target: <code>POST /vulnerable/api/transfer.php</code> &bull; CWE-352, CWE-79, CWE-1021</p>
+        </div>
+
+        <div class="lab-layout">
+            <!-- Left Panel: Transfer Form -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>💸</span> Initiate Money Transfer
+                </div>
+                <div class="panel-subtitle">
+                    Notice: <b>No CSRF token</b> is present in this form. Any malicious website can forge this request!
+                </div>
+
+                <form id="transferForm" action="../api/transfer.php" method="POST">
+                    <div class="form-group">
+                        <label class="form-label" for="receiverInput">Recipient Account ID</label>
+                        <input type="number" id="receiverInput" name="receiver" class="form-control" value="2" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="amountInput">Transfer Amount ($ USD)</label>
+                        <input type="number" id="amountInput" name="amount" class="form-control" value="500.00" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="remarkInput">Transaction Remark (Stored XSS Sink)</label>
+                        <input type="text" id="remarkInput" name="remark" class="form-control" value="<script>alert('Stored_XSS')</script>" required>
+                    </div>
+
+                    <!-- Stored XSS Payloads -->
+                    <div class="form-group">
+                        <label class="form-label">⚡ Stored XSS Payloads (Click to apply into Remark):</label>
+                        <div class="payload-pills">
+                            <button type="button" class="btn-payload" onclick="document.getElementById('remarkInput').value = \"<script>alert('Stored_XSS')</script>\";">
+                                💥 &lt;script&gt;alert('Stored_XSS')&lt;/script&gt;
+                            </button>
+                            <button type="button" class="btn-payload" onclick="document.getElementById('remarkInput').value = \"<img src=x onerror=alert('Stored_Img_XSS')>\";">
+                                💥 &lt;img src=x onerror=alert(...)&gt;
+                            </button>
+                            <button type="button" class="btn-payload" onclick="document.getElementById('remarkInput').value = \"Rent Payment\";" style="border-color: rgba(255,255,255,0.2); color: var(--text-muted);">
+                                📝 Benign (Rent Payment)
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-launch-exploit" style="width: 100%; font-size: 1rem; padding: 0.85rem;">
+                        ⚡ Execute Transfer (No CSRF Protection)
+                    </button>
+                </form>
+
+                <!-- CSRF Simulator -->
+                <div style="margin-top: 2rem; padding: 1.25rem; background: rgba(244, 63, 94, 0.08); border: 1px dashed var(--color-danger); border-radius: var(--radius-sm);">
+                    <div style="font-weight: 700; color: #fda4af; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🎭</span> Attacker Cross-Origin CSRF Simulation
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                        Click below to simulate visiting a phishing website <code>http://attacker-evil.com/prize.html</code> that silently forces your browser to submit a transfer without your consent.
+                    </p>
+                    <button type="button" class="btn-payload" onclick="simulateCsrfAttack()" style="background: var(--color-danger); color: white; padding: 0.6rem 1rem; font-weight: 600;">
+                        💥 Trigger Forged Cross-Origin Transfer ($9,999 to Attacker #3)
+                    </button>
+                    <div id="csrfResult" style="margin-top: 0.75rem; font-size: 0.85rem; font-family: var(--font-mono); color: var(--color-success); display: none;"></div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Architectural Forensics -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔬</span> Defense Architectural Differences
+                </div>
+                <div class="panel-subtitle">
+                    How CSRF Synchronizer Tokens & CSP Frame Ancestors prevent abuse.
+                </div>
+
+                <div class="diff-box">
+                    <div class="diff-title" style="color: var(--color-danger);">
+                        <span>❌</span> Vulnerable Transfer Handler (vulnerable/api/transfer.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// ⚠️ NO CSRF TOKEN CHECK
+// ⚠️ REMARK STORED WITHOUT SANITIZATION
+$amount = $_POST['amount'];
+$remark = $_POST['remark']; // Raw XSS payload stored in DB!
+$conn->query("INSERT INTO transactions ... VALUES (..., '$remark')");
+                    </div>
+                </div>
+
+                <div class="diff-box secure">
+                    <div class="diff-title" style="color: var(--color-success);">
+                        <span>✅</span> Fortified Transfer Handler (api/transfer.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// 🛡️ SECURE: Timing-safe CSRF validation
+if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    log_security_event($userId, 'CSRF_FAILURE', 'BLOCKED');
+    die_json(403, 'Invalid anti-CSRF synchronizer token');
+}
+// 🛡️ SECURE: HTML entity escaping on output (safe_html)
+                    </div>
+                </div>
+
+                <!-- Clickjacking Box -->
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-sm);">
+                    <div style="font-weight: 700; color: var(--color-warning); margin-bottom: 0.3rem;">🪟 Clickjacking Status:</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">
+                        This page sends <b>NO <code>X-Frame-Options: DENY</code></b> header. Any external site can embed this form in an invisible <code>&lt;iframe&gt;</code> to trick victims into clicking transfer buttons.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function simulateCsrfAttack() {
+            const formData = new FormData();
+            formData.append('receiver', '3');
+            formData.append('amount', '9999.00');
+            formData.append('remark', 'Forged Unauthorized CSRF Transfer');
+
+            fetch('../api/transfer.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.text())
+            .then(res => {
+                const resEl = document.getElementById('csrfResult');
+                resEl.style.display = 'block';
+                resEl.textContent = 'Attack Succeeded: ' + res;
+            })
+            .catch(err => {
+                alert('CSRF request error: ' + err);
+            });
+        }
+    </script>
 </body>
 </html>

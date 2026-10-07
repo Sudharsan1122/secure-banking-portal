@@ -1,10 +1,124 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflected XSS & SQLi Search Lab — InsecureBank</title>
+    <link rel="stylesheet" href="../css/vuln_style.css">
+</head>
 <body>
-    <h2>Insecure Search (Test Reflected XSS & SQLi here)</h2>
-    <form action="../api/search.php" method="GET">
-        Search Remark: <input type="text" name="q" value="<script>alert('Reflected XSS')</script>"><br><br>
-        <button type="submit">Search</button>
-    </form>
+    <header class="vuln-navbar">
+        <a href="../index.html" class="vuln-brand">
+            <div class="vuln-logo">⚠️</div>
+            <div>
+                <h1>Insecure<span>Bank</span> &bull; Search Lab</h1>
+            </div>
+        </a>
+        <div class="vuln-status-pill">
+            <span class="status-dot"></span>
+            Reflected XSS Active
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html" class="nav-link">Hub</a>
+            <a href="login.html" class="nav-link">SQLi Login</a>
+            <a href="dashboard.html?user_id=1" class="nav-link">IDOR</a>
+            <a href="transfer.html" class="nav-link">CSRF</a>
+            <a href="search.html" class="nav-link active">Search</a>
+            <a href="statements.html" class="nav-link">Traversal</a>
+            <a href="../../frontend/transactions.html" class="btn-switch-secure">🛡️ Test Secure Search</a>
+        </nav>
+    </header>
+
+    <main class="vuln-container">
+        <div class="vuln-hero" style="text-align: left; margin-bottom: 1.5rem;">
+            <span class="severity-pill severity-medium">Medium Severity (CVSS 6.1)</span>
+            <h2 style="margin-top: 0.5rem;">Reflected Cross-Site Scripting & SQLi Search</h2>
+            <p>Target: <code>GET /vulnerable/api/search.php</code> &bull; CWE-79 &bull; CWE-89 &bull; OWASP A03:2021</p>
+        </div>
+
+        <div class="lab-layout">
+            <!-- Left Panel: Search Form -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔍</span> Transaction Search Filter
+                </div>
+                <div class="panel-subtitle">
+                    The query parameter <code>q</code> is reflected directly into HTML output without entity encoding.
+                </div>
+
+                <form id="searchForm" action="../api/search.php" method="GET">
+                    <div class="form-group">
+                        <label class="form-label" for="searchInput">Search Query / Remark Filter</label>
+                        <input type="text" id="searchInput" name="q" class="form-control" value="<script>alert('Reflected_XSS')</script>" required>
+                    </div>
+
+                    <!-- Quick Payloads -->
+                    <div class="form-group">
+                        <label class="form-label">⚡ Quick Payload Injectors (Click to apply):</label>
+                        <div class="payload-pills">
+                            <button type="button" class="btn-payload" onclick="document.getElementById('searchInput').value = \"<script>alert('Reflected_XSS')</script>\";">
+                                💥 &lt;script&gt;alert('Reflected_XSS')&lt;/script&gt;
+                            </button>
+                            <button type="button" class="btn-payload" onclick="document.getElementById('searchInput').value = \"<img src=x onerror=alert('Reflected_Img')>\";">
+                                💥 &lt;img src=x onerror=alert(...)&gt;
+                            </button>
+                            <button type="button" class="btn-payload" onclick="document.getElementById('searchInput').value = \"' OR '1'='1\";">
+                                💥 SQLi: ' OR '1'='1
+                            </button>
+                            <button type="button" class="btn-payload" onclick="document.getElementById('searchInput').value = \"Rent\";" style="border-color: rgba(255,255,255,0.2); color: var(--text-muted);">
+                                📝 Benign (Rent)
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-launch-exploit" style="width: 100%; font-size: 1rem; padding: 0.85rem;">
+                        ⚡ Submit Query (Triggers Reflected Output)
+                    </button>
+                </form>
+
+                <!-- Live Results Preview Frame -->
+                <div style="margin-top: 2rem;">
+                    <div class="terminal-header">
+                        <span>📡 Live In-Page Response Frame (Executes Payload):</span>
+                    </div>
+                    <iframe id="resultsFrame" src="../api/search.php?q=Rent" style="width: 100%; height: 200px; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); background: #fff;"></iframe>
+                </div>
+            </div>
+
+            <!-- Right Panel: Forensics -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔬</span> Reflected XSS Forensics
+                </div>
+                <div class="panel-subtitle">
+                    Why the reflection executes arbitrary JavaScript.
+                </div>
+
+                <div class="diff-box">
+                    <div class="diff-title" style="color: var(--color-danger);">
+                        <span>❌</span> Insecure Reflection (vulnerable/api/search.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// ⚠️ UNENCODED REFLECTION:
+$query = $_GET['q'];
+echo "&lt;h2&gt;Search Results for: " . $query . "&lt;/h2&gt;";
+                    </div>
+                </div>
+
+                <div class="diff-box secure">
+                    <div class="diff-title" style="color: var(--color-success);">
+                        <span>✅</span> Fortified Escaping (api/search_transactions.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// 🛡️ SECURE: Context-aware HTML entity encoding
+echo "&lt;h2&gt;Search Results for: " . 
+     htmlspecialchars($query, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . 
+     "&lt;/h2&gt;";
+// + Strict Content-Security-Policy (CSP Nonce)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

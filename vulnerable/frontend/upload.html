@@ -1,11 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unrestricted File Upload (RCE) Lab — InsecureBank</title>
+    <link rel="stylesheet" href="../css/vuln_style.css">
+</head>
 <body>
-    <h2>Insecure File Upload (Test RCE here)</h2>
-    <form action="../api/upload.php" method="POST" enctype="multipart/form-data">
-        Select image to upload (Try a .php file!):
-        <input type="file" name="avatar" id="avatar"><br><br>
-        <button type="submit" name="submit">Upload File</button>
-    </form>
+    <header class="vuln-navbar">
+        <a href="../index.html" class="vuln-brand">
+            <div class="vuln-logo">⚠️</div>
+            <div>
+                <h1>Insecure<span>Bank</span> &bull; File Upload Lab</h1>
+            </div>
+        </a>
+        <div class="vuln-status-pill">
+            <span class="status-dot"></span>
+            Arbitrary Upload Active
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html" class="nav-link">Hub</a>
+            <a href="login.html" class="nav-link">SQLi Login</a>
+            <a href="dashboard.html?user_id=1" class="nav-link">IDOR</a>
+            <a href="transfer.html" class="nav-link">CSRF</a>
+            <a href="statements.html" class="nav-link">Traversal</a>
+            <a href="upload.html" class="nav-link active">File Upload</a>
+            <a href="../../frontend/profile.html" class="btn-switch-secure">🛡️ Test Secure Avatar Upload</a>
+        </nav>
+    </header>
+
+    <main class="vuln-container">
+        <div class="vuln-hero" style="text-align: left; margin-bottom: 1.5rem;">
+            <span class="severity-pill severity-critical">Critical Severity (CVSS 9.8)</span>
+            <h2 style="margin-top: 0.5rem;">Unrestricted File Upload & Remote Code Execution (RCE)</h2>
+            <p>Target: <code>POST /vulnerable/api/upload.php</code> &bull; CWE-434 &bull; OWASP A04:2021</p>
+        </div>
+
+        <div class="lab-layout">
+            <!-- Left Panel: Upload Form -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>💣</span> Upload Customer Avatar / File
+                </div>
+                <div class="panel-subtitle">
+                    This endpoint accepts arbitrary file extensions (including <code>.php</code>, <code>.phtml</code>, <code>.phar</code>) with zero MIME or magic-byte validation.
+                </div>
+
+                <!-- Helper: Download PoC Web Shell -->
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: var(--radius-sm);">
+                    <div style="font-weight: 700; color: var(--color-cyan); margin-bottom: 0.3rem;">⚡ Step 1: Create a Demo PoC PHP Shell</div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                        Click below to generate and download a sample benign <code>shell_poc.php</code> file to test uploading.
+                    </p>
+                    <button type="button" class="btn-payload" onclick="generateSampleShell()" style="background: rgba(56, 189, 248, 0.2); border-color: var(--color-cyan); color: #fff;">
+                        💾 Download Demo shell_poc.php
+                    </button>
+                </div>
+
+                <!-- Upload Form -->
+                <form id="uploadForm" action="../api/upload.php" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label class="form-label">Step 2: Select File to Upload</label>
+                        <input type="file" id="fileInput" name="avatar" class="form-control" style="padding: 0.5rem;" required>
+                    </div>
+
+                    <button type="submit" class="btn-launch-exploit" style="width: 100%; font-size: 1rem; padding: 0.85rem; margin-top: 1rem;">
+                        🚀 Upload File to Server
+                    </button>
+                </form>
+
+                <div id="uploadFeedback" style="margin-top: 1.5rem; display: none;"></div>
+            </div>
+
+            <!-- Right Panel: Forensics -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔬</span> Upload Defense Forensics
+                </div>
+                <div class="panel-subtitle">
+                    Why unrestricted file uploads lead directly to server takeover.
+                </div>
+
+                <div class="diff-box">
+                    <div class="diff-title" style="color: var(--color-danger);">
+                        <span>❌</span> Insecure File Upload (vulnerable/api/upload.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// ⚠️ NO EXTENSION CHECK
+// ⚠️ NO MIME-TYPE CHECK
+// ⚠️ PRESERVES ORIGINAL FILENAME IN WEB ROOT
+$target = "../../uploads/" . basename($_FILES["avatar"]["name"]);
+move_uploaded_file($_FILES["avatar"]["tmp_name"], $target);
+                    </div>
+                </div>
+
+                <div class="diff-box secure">
+                    <div class="diff-title" style="color: var(--color-success);">
+                        <span>✅</span> Fortified Multi-Layer Upload Guard (api/avatar.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// 🛡️ SECURE 4-TIER DEFENSE:
+// 1. Strict extension allowlist (jpg, jpeg, png, webp only)
+// 2. Magic-byte verification (exif_imagetype / finfo)
+// 3. Cryptographic UUID file renaming (prevents path execution)
+// 4. File size ceiling (2MB max)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function generateSampleShell() {
+            const phpCode = "<?php\necho '<h2>🔥 Remote Code Execution Succeeded!</h2>';\necho '<p>Server Operating System: ' . php_uname() . '</p>';\necho '<p>PHP Version: ' . phpversion() . '</p>';\n?>";
+            const blob = new Blob([phpCode], { type: 'application/x-php' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'shell_poc.php';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
 </body>
 </html>

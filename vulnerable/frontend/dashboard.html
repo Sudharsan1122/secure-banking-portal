@@ -1,34 +1,262 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDOR & DOM XSS Dashboard Lab — InsecureBank</title>
+    <link rel="stylesheet" href="../css/vuln_style.css">
+</head>
 <body>
-    <h2>Insecure Dashboard (Test IDOR & DOM XSS here)</h2>
-    
-    <!-- ⚠️ VULNERABILITY 9: DOM XSS -->
-    <div id="greeting"></div>
-    <script>
-        // INSECURE DOM XSS: Reading from URL hash and setting innerHTML directly
-        let hash = decodeURIComponent(window.location.hash.substring(1));
-        if(hash) {
-            document.getElementById('greeting').innerHTML = "Welcome, " + hash;
-        } else {
-            document.getElementById('greeting').innerHTML = "Welcome, User";
-        }
-    </script>
-    
-    <p>Try appending <code>#&lt;img src=x onerror=alert('DOM_XSS')&gt;</code> to the URL.</p>
+    <header class="vuln-navbar">
+        <a href="../index.html" class="vuln-brand">
+            <div class="vuln-logo">⚠️</div>
+            <div>
+                <h1>Insecure<span>Bank</span> &bull; Account Dashboard</h1>
+            </div>
+        </a>
+        <div class="vuln-status-pill">
+            <span class="status-dot"></span>
+            IDOR & DOM XSS Active
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html" class="nav-link">Hub</a>
+            <a href="login.html" class="nav-link">SQLi Login</a>
+            <a href="dashboard.html?user_id=1" class="nav-link active">IDOR Dashboard</a>
+            <a href="transfer.html" class="nav-link">CSRF</a>
+            <a href="search.html" class="nav-link">XSS</a>
+            <a href="statements.html" class="nav-link">Traversal</a>
+            <a href="../../frontend/dashboard.html" class="btn-switch-secure">🛡️ Test Secure Dashboard</a>
+        </nav>
+    </header>
 
-    <hr>
-    <h3>Your Accounts (IDOR Test)</h3>
-    <p>Try changing <code>?user_id=1</code> in the URL to <code>?user_id=2</code> to see someone else's accounts.</p>
-    <div id="accounts"></div>
+    <main class="vuln-container">
+        <!-- DOM XSS Greeting Banner -->
+        <div style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(15, 23, 42, 0.9)); border: 1px solid var(--border-danger); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <span class="severity-pill severity-medium" style="margin-bottom: 0.5rem; display: inline-block;">VULN-06: DOM-Based XSS Sink</span>
+                    <h2 id="greetingMsg" style="font-size: 1.5rem; color: #fff; margin-top: 0.2rem;">Welcome, User</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">
+                        The greeting element above uses <code>element.innerHTML = window.location.hash</code> without escaping.
+                    </p>
+                </div>
+                <div>
+                    <label class="form-label" style="font-size: 0.75rem;">⚡ Trigger DOM XSS (Modifies URL Hash):</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button type="button" class="btn-payload" onclick="triggerDomXss(\"<img src=x onerror=alert('DOM_XSS_IMG')>\")">
+                            💥 Image onerror
+                        </button>
+                        <button type="button" class="btn-payload" onclick="triggerDomXss(\"<svg onload=alert('DOM_XSS_SVG')>\")">
+                            💥 SVG onload
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IDOR Lab Section -->
+        <div class="lab-layout">
+            <!-- Left Panel: IDOR Customer Selector & Live Account Cards -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔓</span> IDOR Account Inspection Lab
+                </div>
+                <div class="panel-subtitle">
+                    The endpoint <code>/api/get_accounts.php?user_id=X</code> trusts client input without verifying session ownership.
+                </div>
+
+                <!-- IDOR User Selector Buttons -->
+                <div class="form-group">
+                    <label class="form-label">⚡ Switch Customer ID via URL Parameter (IDOR):</label>
+                    <div class="payload-pills">
+                        <button type="button" class="btn-payload" onclick="switchUser(1)" id="btnUser1">
+                            👤 Admin (ID: 1)
+                        </button>
+                        <button type="button" class="btn-payload" onclick="switchUser(2)" id="btnUser2">
+                            👤 Alice (ID: 2)
+                        </button>
+                        <button type="button" class="btn-payload" onclick="switchUser(3)" id="btnUser3">
+                            👤 Bob (ID: 3)
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; align-items: flex-end; margin-bottom: 1.5rem;">
+                    <div style="flex-grow: 1;">
+                        <label class="form-label">Or Enter Arbitrary Target Customer ID:</label>
+                        <input type="number" id="targetUserIdInput" class="form-control" value="1" min="1" max="100">
+                    </div>
+                    <button type="button" class="btn-launch-exploit" onclick="fetchAccounts(document.getElementById('targetUserIdInput').value)" style="padding: 0.75rem 1.25rem;">
+                        Fetch Insecurely
+                    </button>
+                </div>
+
+                <!-- Live Fetched Account Cards -->
+                <div id="accountsLoading" style="display: none; color: var(--text-muted); font-size: 0.9rem;">
+                    Loading accounts from backend database...
+                </div>
+                <div id="accountsContainer" style="display: grid; gap: 1rem;">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Right Panel: Code Forensics & Difference -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔬</span> IDOR & DOM XSS Forensics
+                </div>
+                <div class="panel-subtitle">
+                    Why the application leaks tenant data and executes client code.
+                </div>
+
+                <div class="diff-box">
+                    <div class="diff-title" style="color: var(--color-danger);">
+                        <span>❌</span> Insecure IDOR Query (vulnerable/api/get_accounts.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// ⚠️ VULNERABLE: Trusts client input!
+$userId = $_GET['user_id']; 
+$sql = "SELECT * FROM accounts 
+        WHERE user_id = $userId";
+$res = $conn->query($sql);
+                    </div>
+                </div>
+
+                <div class="diff-box secure">
+                    <div class="diff-title" style="color: var(--color-success);">
+                        <span>✅</span> Fortified Query (api/get_accounts.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// 🛡️ SECURE: Scoped strictly to session context
+$user = require_auth();
+$userId = $user['id']; // From cryptographically signed session!
+$stmt = $pdo->prepare("SELECT * FROM accounts WHERE user_id = :u");
+$stmt->execute([':u' => $userId]);
+                    </div>
+                </div>
+
+                <div class="diff-box">
+                    <div class="diff-title" style="color: var(--color-danger);">
+                        <span>❌</span> DOM XSS Sink (vulnerable/frontend/dashboard.html)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// ⚠️ INSECURE: innerHTML evaluates raw markup!
+let hash = decodeURIComponent(location.hash.slice(1));
+greeting.innerHTML = "Welcome, " + hash;
+                    </div>
+                </div>
+
+                <div class="diff-box secure">
+                    <div class="diff-title" style="color: var(--color-success);">
+                        <span>✅</span> Safe DOM Sink (frontend/dashboard.html)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// 🛡️ SECURE: textContent binds strictly as inert text
+greeting.textContent = "Welcome, " + safeName;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get('user_id') || 1;
-        fetch('../api/get_accounts.php?user_id=' + userId)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('accounts').innerText = JSON.stringify(data, null, 2);
+        // DOM XSS Sink
+        function renderGreeting() {
+            const rawHash = window.location.hash.substring(1);
+            if (rawHash) {
+                const decoded = decodeURIComponent(rawHash);
+                // INSECURE: innerHTML executes payload
+                document.getElementById('greetingMsg').innerHTML = "Welcome, " + decoded;
+            } else {
+                document.getElementById('greetingMsg').textContent = "Welcome, Authenticated User";
+            }
+        }
+
+        function triggerDomXss(payload) {
+            window.location.hash = payload;
+            renderGreeting();
+        }
+
+        window.addEventListener('hashchange', renderGreeting);
+        renderGreeting();
+
+        // IDOR Account Fetcher
+        function fetchAccounts(userId) {
+            document.getElementById('targetUserIdInput').value = userId;
+            const container = document.getElementById('accountsContainer');
+            const loading = document.getElementById('accountsLoading');
+            loading.style.display = 'block';
+            container.innerHTML = '';
+
+            // Update button highlights
+            [1, 2, 3].forEach(id => {
+                const btn = document.getElementById('btnUser' + id);
+                if (btn) {
+                    if (id == userId) {
+                        btn.style.background = 'rgba(244, 63, 94, 0.3)';
+                        btn.style.borderColor = 'var(--color-danger)';
+                    } else {
+                        btn.style.background = 'rgba(244, 63, 94, 0.08)';
+                        btn.style.borderColor = 'rgba(244, 63, 94, 0.25)';
+                    }
+                }
             });
+
+            fetch('../api/get_accounts.php?user_id=' + encodeURIComponent(userId))
+                .then(r => r.json())
+                .then(accounts => {
+                    loading.style.display = 'none';
+                    if (!accounts || accounts.length === 0) {
+                        container.innerHTML = '<div style="color: var(--text-dim); padding: 1rem; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm);">No accounts found for Customer ID ' + userId + '</div>';
+                        return;
+                    }
+
+                    accounts.forEach(acc => {
+                        const card = document.createElement('div');
+                        card.style.background = 'var(--bg-input)';
+                        card.style.border = '1px solid rgba(255,255,255,0.08)';
+                        card.style.borderRadius = 'var(--radius-sm)';
+                        card.style.padding = '1.25rem';
+                        card.style.display = 'flex';
+                        card.style.justifyContent = 'space-between';
+                        card.style.alignItems = 'center';
+
+                        card.innerHTML = `
+                            <div>
+                                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 600;">
+                                    ${acc.type || 'SAVINGS'} ACCOUNT &bull; OWNER USER ID: ${acc.user_id}
+                                </div>
+                                <div style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">
+                                    ${acc.account_number}
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.75rem; color: var(--text-dim);">Available Balance</div>
+                                <div style="font-size: 1.4rem; font-weight: 800; color: var(--color-success); font-family: var(--font-mono);">
+                                    $${parseFloat(acc.balance).toLocaleString(undefined, {minimumFractionDigits: 2})}
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                })
+                .catch(err => {
+                    loading.style.display = 'none';
+                    container.innerHTML = '<div style="color: var(--color-danger); padding: 1rem;">Failed to fetch accounts: ' + err.message + '</div>';
+                });
+        }
+
+        function switchUser(userId) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('user_id', userId);
+            window.history.pushState({}, '', url);
+            fetchAccounts(userId);
+        }
+
+        // Initial load from URL search param
+        const urlParams = new URLSearchParams(window.location.search);
+        const initUser = urlParams.get('user_id') || 1;
+        fetchAccounts(initUser);
     </script>
 </body>
 </html>

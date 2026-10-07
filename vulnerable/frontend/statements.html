@@ -1,10 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory / Path Traversal Lab — InsecureBank</title>
+    <link rel="stylesheet" href="../css/vuln_style.css">
+</head>
 <body>
-    <h2>Insecure Statement Download (Test Path Traversal here)</h2>
-    <form action="../api/download.php" method="GET">
-        Filename: <input type="text" name="file" value="../../../../Windows/win.ini"><br><br>
-        <button type="submit">Download</button>
-    </form>
+    <header class="vuln-navbar">
+        <a href="../index.html" class="vuln-brand">
+            <div class="vuln-logo">⚠️</div>
+            <div>
+                <h1>Insecure<span>Bank</span> &bull; Traversal Lab</h1>
+            </div>
+        </a>
+        <div class="vuln-status-pill">
+            <span class="status-dot"></span>
+            Path Traversal Active
+        </div>
+        <nav class="nav-links">
+            <a href="../index.html" class="nav-link">Hub</a>
+            <a href="login.html" class="nav-link">SQLi Login</a>
+            <a href="dashboard.html?user_id=1" class="nav-link">IDOR</a>
+            <a href="transfer.html" class="nav-link">CSRF</a>
+            <a href="search.html" class="nav-link">XSS</a>
+            <a href="statements.html" class="nav-link active">Traversal</a>
+            <a href="../../frontend/transactions.html" class="btn-switch-secure">🛡️ Test Secure Statements</a>
+        </nav>
+    </header>
+
+    <main class="vuln-container">
+        <div class="vuln-hero" style="text-align: left; margin-bottom: 1.5rem;">
+            <span class="severity-pill severity-high">High Severity (CVSS 7.5)</span>
+            <h2 style="margin-top: 0.5rem;">Directory / Path Traversal Lab</h2>
+            <p>Target: <code>GET /vulnerable/api/download.php</code> &bull; CWE-22 &bull; OWASP A01:2021</p>
+        </div>
+
+        <div class="lab-layout">
+            <!-- Left Panel: Traversal Form -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>📂</span> Arbitrary File Download / Traversal
+                </div>
+                <div class="panel-subtitle">
+                    The parameter <code>file</code> is directly appended to the file path without <code>realpath()</code> boundary checks.
+                </div>
+
+                <form id="traversalForm" action="../api/download.php" method="GET" target="_blank">
+                    <div class="form-group">
+                        <label class="form-label" for="fileInput">Target File Path / Relative Traversal</label>
+                        <input type="text" id="fileInput" name="file" class="form-control" value="../../../../Windows/win.ini" required>
+                    </div>
+
+                    <!-- Quick Payloads -->
+                    <div class="form-group">
+                        <label class="form-label">⚡ Quick Traversal Payloads (Click to apply):</label>
+                        <div class="payload-pills">
+                            <button type="button" class="btn-payload" onclick="document.getElementById('fileInput').value = '../../../../Windows/win.ini';">
+                                💥 ../../../../Windows/win.ini
+                            </button>
+                            <button type="button" class="btn-payload" onclick="document.getElementById('fileInput').value = '../../.env';">
+                                💥 ../../.env (DB Passwords)
+                            </button>
+                            <button type="button" class="btn-payload" onclick="document.getElementById('fileInput').value = '../../database/banking.sql';">
+                                💥 ../../database/banking.sql
+                            </button>
+                            <button type="button" class="btn-payload" onclick="document.getElementById('fileInput').value = 'sample.pdf';" style="border-color: rgba(255,255,255,0.2); color: var(--text-muted);">
+                                📄 Normal (sample.pdf)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button type="submit" class="btn-launch-exploit" style="flex: 1; font-size: 0.95rem; padding: 0.85rem;">
+                            📥 Download File
+                        </button>
+                        <button type="button" class="btn-payload" onclick="readInPage()" style="background: rgba(56, 189, 248, 0.15); border-color: var(--color-cyan); color: #fff; padding: 0.85rem 1.25rem;">
+                            👁️ Preview In-Page
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Live File Contents Console -->
+                <div style="margin-top: 2rem;">
+                    <div class="terminal-header">
+                        <span>📡 Live Server File Preview Console:</span>
+                        <span id="previewStatus" style="color: var(--color-cyan);">Idle</span>
+                    </div>
+                    <pre class="code-preview-box" id="fileContentBox" style="max-height: 250px; overflow-y: auto;">Click "Preview In-Page" to view extracted server files here...</pre>
+                </div>
+            </div>
+
+            <!-- Right Panel: Forensics -->
+            <div class="lab-panel">
+                <div class="panel-title">
+                    <span>🔬</span> Directory Traversal Forensics
+                </div>
+                <div class="panel-subtitle">
+                    How canonicalization and regex sandboxing eliminate arbitrary reads.
+                </div>
+
+                <div class="diff-box">
+                    <div class="diff-title" style="color: var(--color-danger);">
+                        <span>❌</span> Vulnerable Concatenation (vulnerable/api/download.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// ⚠️ UNCHECKED RELATIVE TRAVERSAL:
+$file = $_GET['file'];
+$path = "../../statements/" . $file;
+readfile($path); // Leaks sensitive files!
+                    </div>
+                </div>
+
+                <div class="diff-box secure">
+                    <div class="diff-title" style="color: var(--color-success);">
+                        <span>✅</span> Fortified Regex & realpath() (api/download_statement.php)
+                    </div>
+                    <div class="code-preview-box" style="margin-bottom: 0;">
+// 🛡️ SECURE: Strict regex allowlist
+if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $date)) {
+    log_security_event($userId, 'DIRECTORY_TRAVERSAL', 'BLOCKED');
+    die_json(400, 'Invalid date format');
+}
+// Deterministic internal filename (user_{id}_{year}_{month}.pdf)
+// realpath() jail boundary check
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function readInPage() {
+            const file = document.getElementById('fileInput').value;
+            const statusEl = document.getElementById('previewStatus');
+            const boxEl = document.getElementById('fileContentBox');
+
+            statusEl.textContent = 'Fetching ' + file + '...';
+            fetch('../api/download.php?file=' + encodeURIComponent(file))
+                .then(r => r.text())
+                .then(text => {
+                    statusEl.textContent = 'Fetched successfully (' + text.length + ' bytes)';
+                    boxEl.textContent = text;
+                })
+                .catch(err => {
+                    statusEl.textContent = 'Error: ' + err.message;
+                    boxEl.textContent = 'Error loading file: ' + err.message;
+                });
+        }
+    </script>
 </body>
 </html>
