@@ -3,265 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InsecureBank — Cyber Range & Vulnerability Demonstration Lab</title>
-    <link rel="stylesheet" href="css/vuln_style.css">
+    <title>SecureBank &bull; Vulnerability Training Environment</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
-    <!-- Top Navigation Bar -->
-    <header class="vuln-navbar">
-        <a href="index.html" class="vuln-brand">
-            <div class="vuln-logo">⚠️</div>
-            <div>
-                <h1>Insecure<span>Bank</span></h1>
-            </div>
-        </a>
-        <div class="vuln-status-pill">
-            <span class="status-dot"></span>
-            Vulnerable Mode Active
+<body style="min-height: 100vh; display: flex; flex-direction: column;">
+    <!-- Top Environment Banner -->
+    <div style="background: #0B1F3A; border-bottom: 1px solid rgba(255,255,255,0.12); padding: 8px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem; font-family: 'Inter', sans-serif;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #E5484D; box-shadow: 0 0 6px #E5484D;"></span>
+            <span style="color: #fca5a5; font-weight: 600;">PORTAL MODE: INSECURE SANDBOX ENVIRONMENT</span>
         </div>
-        <nav class="nav-links">
-            <a href="index.html" class="nav-link active">Hub</a>
-            <a href="frontend/login.html" class="nav-link">SQLi Login</a>
-            <a href="frontend/dashboard.html?user_id=1" class="nav-link">IDOR Dashboard</a>
-            <a href="frontend/transfer.html" class="nav-link">CSRF & XSS</a>
-            <a href="frontend/search.html" class="nav-link">Reflected XSS</a>
-            <a href="frontend/statements.html" class="nav-link">Path Traversal</a>
-            <a href="frontend/upload.html" class="nav-link">File Upload</a>
-            <a href="frontend/admin.html" class="nav-link">Broken Auth</a>
-            <a href="../frontend/login.html" class="btn-switch-secure">🛡️ Switch to Secure Portal</a>
-        </nav>
+        <a href="../frontend/login.html" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.75rem;">
+            🛡️ Switch to Fortified Portal
+        </a>
+    </div>
+
+    <!-- Sticky 64px Header -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <a href="index.html" class="app-brand">
+                <img src="../images/logo.svg" alt="SecureBank Logo" height="32">
+            </a>
+            <nav class="app-nav">
+                <a href="frontend/login.html" class="app-nav-link">Sign In</a>
+                <a href="frontend/dashboard.html?user_id=1" class="app-nav-link">Dashboard</a>
+                <a href="frontend/transfer.html" class="app-nav-link">Transfer</a>
+                <a href="frontend/transactions.html" class="app-nav-link">Transactions</a>
+                <a href="frontend/profile.html" class="app-nav-link">Profile</a>
+                <a href="frontend/admin.html" class="app-nav-link badge badge-warning">Admin</a>
+            </nav>
+        </div>
+
+        <div class="app-header-right">
+            <a href="../frontend/login.html" class="btn btn-primary btn-sm">🛡️ Open Fortified Portal</a>
+        </div>
     </header>
 
-    <main class="vuln-container">
+    <main class="app-main" style="max-width: 1000px; margin: 40px auto; padding: 0 24px; flex-grow: 1;">
         <!-- Hero Section -->
-        <section class="vuln-hero">
-            <div class="vuln-hero-badge">
-                <span>⚡ Capstone Academic Demonstration</span>
-            </div>
-            <h2>Interactive Web Vulnerability Cyber Range</h2>
-            <p>
-                An intentionally vulnerable fintech laboratory designed to demonstrate critical web application attacks in an isolated environment. Compare each exploit against its defense in the Secure Banking Portal.
+        <div style="text-align: center; margin-bottom: 48px;">
+            <span class="badge badge-danger" style="margin-bottom: 12px;">CAPSTONE DEMONSTRATION LAB</span>
+            <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--color-primary); letter-spacing: -0.03em; margin-bottom: 12px;">
+                SecureBank Vulnerability Training Portal
+            </h1>
+            <p style="font-size: 1.0625rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 24px; line-height: 1.6;">
+                This edition provides the <b>exact same user interface and banking workflow</b> as the production SecureBank portal, but backed by intentionally vulnerable endpoints for academic penetration testing and defense comparison.
             </p>
-        </section>
-
-        <!-- Stats Grid -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2.5rem;">
-            <div style="background: var(--bg-card); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
-                <div style="font-size: 1.75rem; font-weight: 800; color: var(--color-danger);">12</div>
-                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600;">Active Vulnerabilities</div>
-            </div>
-            <div style="background: var(--bg-card); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
-                <div style="font-size: 1.75rem; font-weight: 800; color: var(--color-warning);">OWASP Top 10</div>
-                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600;">Direct Alignment</div>
-            </div>
-            <div style="background: var(--bg-card); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
-                <div style="font-size: 1.75rem; font-weight: 800; color: var(--color-cyan);">Port 8080</div>
-                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600;">Local Sandbox Target</div>
-            </div>
-            <div style="background: var(--bg-card); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); text-align: center;">
-                <div style="font-size: 1.75rem; font-weight: 800; color: var(--color-success);">100%</div>
-                <div style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600;">Mitigated in Main Portal</div>
+            <div style="display: flex; justify-content: center; gap: 16px;">
+                <a href="frontend/login.html" class="btn btn-primary btn-lg" style="background: #E5484D; border-color: #E5484D;">
+                    🚀 Enter Insecure Portal (Start at Login)
+                </a>
+                <a href="../frontend/login.html" class="btn btn-secondary btn-lg">
+                    🛡️ Enter Fortified Portal
+                </a>
             </div>
         </div>
 
-        <!-- Vulnerability Grid -->
-        <div class="vuln-grid">
-            <!-- 01: SQLi Login -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-01</span>
-                    <span class="severity-pill severity-critical">Critical (9.8)</span>
+        <!-- Vulnerability Modules Grid -->
+        <div class="stats-grid">
+            <div class="metric-card" style="border-top: 3px solid var(--color-danger);">
+                <div class="metric-card-header">
+                    <span class="metric-card-title">AUTHENTICATION</span>
+                    <span class="badge badge-danger">SQLi</span>
                 </div>
-                <h3>💉 SQL Injection (Auth Bypass)</h3>
-                <p>Authentication form uses raw string concatenation in SQL queries without parameter binding, allowing attackers to login as administrator with simple boolean tautologies.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A03:2021</span>
-                    <span class="meta-chip">CWE-89</span>
-                    <span class="meta-chip">POST /api/login.php</span>
-                </div>
-                <a href="frontend/login.html" class="btn-launch-exploit">🚀 Launch SQLi Lab</a>
+                <div style="font-weight: 700; margin: 8px 0 4px; font-size: 1.1rem;">SQL Injection Auth Bypass</div>
+                <p class="caption" style="line-height: 1.5; margin-bottom: 12px;">Login without a password using standard SQL boolean tautology injection.</p>
+                <a href="frontend/login.html" class="btn btn-ghost btn-sm" style="color: var(--color-secondary); padding: 0;">Launch Login &rarr;</a>
             </div>
 
-            <!-- 02: IDOR Account -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-02</span>
-                    <span class="severity-pill severity-high">High (8.5)</span>
+            <div class="metric-card" style="border-top: 3px solid var(--color-danger);">
+                <div class="metric-card-header">
+                    <span class="metric-card-title">ACCOUNT ISOLATION</span>
+                    <span class="badge badge-danger">IDOR</span>
                 </div>
-                <h3>🔓 Insecure Direct Object Reference (IDOR)</h3>
-                <p>The dashboard blindly trusts the <code>user_id</code> URL parameter without verifying the authenticated session token, allowing customers to view balances and accounts of other users.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A01:2021</span>
-                    <span class="meta-chip">CWE-639</span>
-                    <span class="meta-chip">GET /api/get_accounts.php</span>
-                </div>
-                <a href="frontend/dashboard.html?user_id=1" class="btn-launch-exploit">🚀 Launch IDOR Lab</a>
+                <div style="font-weight: 700; margin: 8px 0 4px; font-size: 1.1rem;">Insecure Direct Object Reference</div>
+                <p class="caption" style="line-height: 1.5; margin-bottom: 12px;">View other customer accounts and balances by tampering with the <code>?user_id=</code> query key.</p>
+                <a href="frontend/dashboard.html?user_id=1" class="btn btn-ghost btn-sm" style="color: var(--color-secondary); padding: 0;">Launch Dashboard &rarr;</a>
             </div>
 
-            <!-- 03: CSRF Money Transfer -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-03</span>
-                    <span class="severity-pill severity-high">High (8.1)</span>
+            <div class="metric-card" style="border-top: 3px solid var(--color-danger);">
+                <div class="metric-card-header">
+                    <span class="metric-card-title">MONEY TRANSFER</span>
+                    <span class="badge badge-danger">CSRF / XSS</span>
                 </div>
-                <h3>🎭 Cross-Site Request Forgery (CSRF)</h3>
-                <p>Money transfer API accepts state-changing POST requests without validating an anti-CSRF synchronizer token or checking the Origin header, enabling forced transactions.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A01:2021</span>
-                    <span class="meta-chip">CWE-352</span>
-                    <span class="meta-chip">POST /api/transfer.php</span>
-                </div>
-                <a href="frontend/transfer.html" class="btn-launch-exploit">🚀 Launch CSRF Lab</a>
+                <div style="font-weight: 700; margin: 8px 0 4px; font-size: 1.1rem;">CSRF & Stored XSS</div>
+                <p class="caption" style="line-height: 1.5; margin-bottom: 12px;">Trigger cross-site forged transactions and inject persistent script tags into transaction memos.</p>
+                <a href="frontend/transfer.html" class="btn btn-ghost btn-sm" style="color: var(--color-secondary); padding: 0;">Launch Transfer &rarr;</a>
             </div>
 
-            <!-- 04: Stored XSS -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-04</span>
-                    <span class="severity-pill severity-high">High (7.5)</span>
+            <div class="metric-card" style="border-top: 3px solid var(--color-danger);">
+                <div class="metric-card-header">
+                    <span class="metric-card-title">LEDGER SEARCH</span>
+                    <span class="badge badge-danger">Reflected XSS</span>
                 </div>
-                <h3>💾 Stored Cross-Site Scripting (XSS)</h3>
-                <p>Transfer remarks accept raw script tags and store them in the database. When search queries or transaction histories are rendered, the malicious script executes automatically.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A03:2021</span>
-                    <span class="meta-chip">CWE-79</span>
-                    <span class="meta-chip">POST /api/transfer.php</span>
-                </div>
-                <a href="frontend/transfer.html" class="btn-launch-exploit">🚀 Launch Stored XSS Lab</a>
+                <div style="font-weight: 700; margin: 8px 0 4px; font-size: 1.1rem;">Reflected XSS in Query</div>
+                <p class="caption" style="line-height: 1.5; margin-bottom: 12px;">Execute browser payloads reflected directly in search output without HTML entity escaping.</p>
+                <a href="frontend/transactions.html" class="btn btn-ghost btn-sm" style="color: var(--color-secondary); padding: 0;">Launch Search &rarr;</a>
             </div>
 
-            <!-- 05: Reflected XSS -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-05</span>
-                    <span class="severity-pill severity-medium">Medium (6.1)</span>
+            <div class="metric-card" style="border-top: 3px solid var(--color-danger);">
+                <div class="metric-card-header">
+                    <span class="metric-card-title">STATEMENTS</span>
+                    <span class="badge badge-danger">Traversal</span>
                 </div>
-                <h3>🪞 Reflected Cross-Site Scripting (XSS)</h3>
-                <p>The transaction search endpoint echoes back the user's search query directly into the HTML response without context-aware HTML entity encoding.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A03:2021</span>
-                    <span class="meta-chip">CWE-79</span>
-                    <span class="meta-chip">GET /api/search.php</span>
-                </div>
-                <a href="frontend/search.html" class="btn-launch-exploit">🚀 Launch Reflected XSS Lab</a>
+                <div style="font-weight: 700; margin: 8px 0 4px; font-size: 1.1rem;">Directory / Path Traversal</div>
+                <p class="caption" style="line-height: 1.5; margin-bottom: 12px;">Download sensitive server files (like <code>win.ini</code> or <code>.env</code>) via unconstrained relative paths.</p>
+                <a href="frontend/transactions.html" class="btn btn-ghost btn-sm" style="color: var(--color-secondary); padding: 0;">Launch Statements &rarr;</a>
             </div>
 
-            <!-- 06: DOM-Based XSS -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-06</span>
-                    <span class="severity-pill severity-medium">Medium (6.1)</span>
+            <div class="metric-card" style="border-top: 3px solid var(--color-danger);">
+                <div class="metric-card-header">
+                    <span class="metric-card-title">USER PROFILE</span>
+                    <span class="badge badge-danger">RCE Upload</span>
                 </div>
-                <h3>⚡ DOM-Based Cross-Site Scripting</h3>
-                <p>Client-side JavaScript reads unvalidated data from <code>window.location.hash</code> and directly writes it into the DOM using the dangerous sink <code>element.innerHTML</code>.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A03:2021</span>
-                    <span class="meta-chip">CWE-79</span>
-                    <span class="meta-chip">location.hash Sink</span>
-                </div>
-                <a href="frontend/dashboard.html#%3Cimg%20src=x%20onerror=alert('DOM_XSS')%3E" class="btn-launch-exploit">🚀 Launch DOM XSS Lab</a>
-            </div>
-
-            <!-- 07: Path Traversal -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-07</span>
-                    <span class="severity-pill severity-high">High (7.5)</span>
-                </div>
-                <h3>📂 Directory / Path Traversal</h3>
-                <p>Statement download endpoint concatenates raw user input to a directory path without canonicalization or <code>realpath()</code> boundary verification, leaking server files like <code>win.ini</code>.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A01:2021</span>
-                    <span class="meta-chip">CWE-22</span>
-                    <span class="meta-chip">GET /api/download.php</span>
-                </div>
-                <a href="frontend/statements.html" class="btn-launch-exploit">🚀 Launch Traversal Lab</a>
-            </div>
-
-            <!-- 08: Malicious File Upload -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-08</span>
-                    <span class="severity-pill severity-critical">Critical (9.8)</span>
-                </div>
-                <h3>💣 Unrestricted File Upload (RCE)</h3>
-                <p>Avatar upload endpoint fails to validate file extensions, MIME types, or magic bytes, and saves files in a public web directory under their original names, enabling Remote Code Execution.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A04:2021</span>
-                    <span class="meta-chip">CWE-434</span>
-                    <span class="meta-chip">POST /api/upload.php</span>
-                </div>
-                <a href="frontend/upload.html" class="btn-launch-exploit">🚀 Launch Upload Lab</a>
-            </div>
-
-            <!-- 09: Broken Access Control -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-09</span>
-                    <span class="severity-pill severity-high">High (8.8)</span>
-                </div>
-                <h3>🛡️ Broken Access Control (Admin Routes)</h3>
-                <p>Administrative functions can be directly invoked over HTTP without checking whether the authenticated session user possesses the required <code>admin</code> role permissions.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A01:2021</span>
-                    <span class="meta-chip">CWE-285</span>
-                    <span class="meta-chip">GET /frontend/admin.html</span>
-                </div>
-                <a href="frontend/admin.html" class="btn-launch-exploit">🚀 Launch Admin Lab</a>
-            </div>
-
-            <!-- 10: Clickjacking -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-10</span>
-                    <span class="severity-pill severity-medium">Medium (6.5)</span>
-                </div>
-                <h3>🪟 Clickjacking (Missing Frame Headers)</h3>
-                <p>Sensitive banking pages omit <code>X-Frame-Options: DENY</code> and <code>frame-ancestors 'none'</code> CSP directives, allowing malicious sites to embed the portal into transparent iframes.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A05:2021</span>
-                    <span class="meta-chip">CWE-1021</span>
-                    <span class="meta-chip">Missing Frame Headers</span>
-                </div>
-                <a href="frontend/transfer.html" class="btn-launch-exploit">🚀 Test Framing Defense</a>
-            </div>
-
-            <!-- 11: SQLi Search -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-11</span>
-                    <span class="severity-pill severity-high">High (8.2)</span>
-                </div>
-                <h3>🔍 SQLi on Transaction Search</h3>
-                <p>Search filter concatenates the <code>q</code> search parameter into a <code>LIKE '%...%'</code> clause without parameterized queries, permitting stacked and boolean queries.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A03:2021</span>
-                    <span class="meta-chip">CWE-89</span>
-                    <span class="meta-chip">GET /api/search.php</span>
-                </div>
-                <a href="frontend/search.html" class="btn-launch-exploit">🚀 Launch Search SQLi Lab</a>
-            </div>
-
-            <!-- 12: Sensitive Data Exposure -->
-            <div class="vuln-card">
-                <div class="card-header-top">
-                    <span class="vuln-id-badge">VULN-12</span>
-                    <span class="severity-pill severity-high">High (7.5)</span>
-                </div>
-                <h3>🔑 Hardcoded & Plaintext Secrets</h3>
-                <p>Database queries transmit unhashed tokens and expose stack traces with database credentials whenever exceptions occur.</p>
-                <div class="vuln-meta-row">
-                    <span class="meta-chip">OWASP A02:2021</span>
-                    <span class="meta-chip">CWE-312</span>
-                    <span class="meta-chip">Stack Trace Disclosure</span>
-                </div>
-                <a href="api/db.php" class="btn-launch-exploit">🚀 Inspect DB Config</a>
+                <div style="font-weight: 700; margin: 8px 0 4px; font-size: 1.1rem;">Unrestricted File Upload</div>
+                <p class="caption" style="line-height: 1.5; margin-bottom: 12px;">Upload executable <code>.php</code> scripts via the avatar upload form without extension checks.</p>
+                <a href="frontend/profile.html" class="btn btn-ghost btn-sm" style="color: var(--color-secondary); padding: 0;">Launch Profile &rarr;</a>
             </div>
         </div>
-
-        <footer class="vuln-footer">
-            <p>InsecureBank Capstone Cyber Range &bull; Built for Academic Attack/Defense Demonstration &bull; <a href="../frontend/login.html" style="color: var(--color-cyan); text-decoration: none;">Return to Secure Banking Portal</a></p>
-        </footer>
     </main>
+
+    <footer style="text-align: center; padding: 24px; border-top: 1px solid var(--border-subtle); color: var(--text-muted); font-size: 0.8125rem;">
+        SecureBank Educational Vulnerability Environment &bull; Designed for Capstone Penetration Testing &bull; <a href="../frontend/login.html" style="color: var(--color-secondary); font-weight: 600;">Switch to Fortified Portal</a>
+    </footer>
 </body>
 </html>

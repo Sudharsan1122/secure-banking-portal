@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History & Statements | SecureBank (Vulnerable Environment)</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <!-- Top Environment Banner -->
+    <div style="background: #0B1F3A; border-bottom: 1px solid rgba(255,255,255,0.12); padding: 8px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem; font-family: 'Inter', sans-serif;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #E5484D; box-shadow: 0 0 6px #E5484D;"></span>
+            <span style="color: #fca5a5; font-weight: 600;">PORTAL MODE: INSECURE SANDBOX</span>
+            <span style="color: var(--text-dim); margin-left: 8px;">&bull; Active Flaws: Reflected XSS &bull; SQLi Search &bull; Path Traversal</span>
+        </div>
+        <a href="../../frontend/transactions.html" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.75rem;">
+            🛡️ Switch to Fortified Portal
+        </a>
+    </div>
+
+    <!-- Sticky 64px Header -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <a href="dashboard.html" class="app-brand">
+                <img src="../../images/logo.svg" alt="SecureBank Logo" height="32">
+            </a>
+            <nav class="app-nav" aria-label="Main Navigation">
+                <a href="dashboard.html" class="app-nav-link">Dashboard</a>
+                <a href="transfer.html" class="app-nav-link">Transfer</a>
+                <a href="transactions.html" class="app-nav-link active">Transactions</a>
+                <a href="profile.html" class="app-nav-link">Security Profile</a>
+                <a href="admin.html" class="app-nav-link badge badge-warning">Admin (BAC)</a>
+            </nav>
+        </div>
+
+        <div class="app-header-right">
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <a href="login.html" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+    </header>
+
+    <main class="app-main" id="main-content">
+        <div class="welcome-strip" style="margin-bottom: var(--space-6);">
+            <div>
+                <h1 class="welcome-greeting">Transaction History & Statements</h1>
+                <div class="welcome-date">Account ledger search, statement download & filter</div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('statementModal').style.display='flex'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Statement</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Bar (Reflected XSS & SQLi) -->
+        <div class="card" style="margin-bottom: var(--space-6);">
+            <form action="../api/search.php" method="GET">
+                <div style="display: flex; gap: var(--space-3); align-items: flex-end;">
+                    <div style="flex-grow: 1;">
+                        <label for="searchInput" class="field-label">Search Transactions (Reflected XSS / SQLi Sink)</label>
+                        <input type="text" id="searchInput" name="q" class="field-input" value="<script>alert('Reflected_XSS')</script>" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary" style="padding: 10px 20px;">
+                        <span>Search Transactions</span>
+                    </button>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('searchInput').value = \"<script>alert('Reflected_XSS')</script>\";">
+                        ⚡ &lt;script&gt;alert('Reflected_XSS')&lt;/script&gt;
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('searchInput').value = \"' OR '1'='1\";">
+                        ⚡ SQLi: ' OR '1'='1
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Transactions Ledger Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Settled Activity</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description / Memo</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Today, 10:45 AM</td>
+                            <td>Merchant Payee Cloud Hosting</td>
+                            <td><span class="badge badge-info">Utilities</span></td>
+                            <td class="mono text-danger">-$120.00</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Oct 05, 2026</td>
+                            <td>Alice Smith Settlement</td>
+                            <td><span class="badge badge-info">Transfer</span></td>
+                            <td class="mono text-success">+$2,450.00</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Oct 01, 2026</td>
+                            <td>Payroll Direct Deposit</td>
+                            <td><span class="badge badge-info">Salary</span></td>
+                            <td class="mono text-success">+$8,500.00</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Path Traversal Statement Modal -->
+    <div id="statementModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000;">
+        <div class="card" style="width: 100%; max-width: 500px; margin: 20px;">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title">Download Monthly Statement</h3>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('statementModal').style.display='none'">✕</button>
+            </div>
+            <p class="caption" style="margin-bottom: var(--space-4);">
+                Insecure download endpoint (vulnerable to directory traversal escaping):
+            </p>
+            <form action="../api/download.php" method="GET">
+                <div class="field">
+                    <label for="stmtFile" class="field-label">File Parameter (Path Traversal)</label>
+                    <input type="text" id="stmtFile" name="file" class="field-input mono" value="../../../../Windows/win.ini" required>
+                </div>
+                <div style="display: flex; gap: 6px; margin-bottom: var(--space-4);">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('stmtFile').value = '../../../../Windows/win.ini'">
+                        ⚡ win.ini
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('stmtFile').value = '../../.env'">
+                        ⚡ .env (DB Passwords)
+                    </button>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+                    <button type="button" class="btn btn-ghost" onclick="document.getElementById('statementModal').style.display='none'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Download File</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

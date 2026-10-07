@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Settings & Profile | SecureBank (Vulnerable Environment)</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <!-- Top Environment Banner -->
+    <div style="background: #0B1F3A; border-bottom: 1px solid rgba(255,255,255,0.12); padding: 8px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8125rem; font-family: 'Inter', sans-serif;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #E5484D; box-shadow: 0 0 6px #E5484D;"></span>
+            <span style="color: #fca5a5; font-weight: 600;">PORTAL MODE: INSECURE SANDBOX</span>
+            <span style="color: var(--text-dim); margin-left: 8px;">&bull; Active Flaw: Unrestricted File Upload (Executable PHP Web Shells)</span>
+        </div>
+        <a href="../../frontend/profile.html" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 0.75rem;">
+            🛡️ Switch to Fortified Portal
+        </a>
+    </div>
+
+    <!-- Sticky 64px Header -->
+    <header class="app-header">
+        <div class="app-header-left">
+            <a href="dashboard.html" class="app-brand">
+                <img src="../../images/logo.svg" alt="SecureBank Logo" height="32">
+            </a>
+            <nav class="app-nav" aria-label="Main Navigation">
+                <a href="dashboard.html" class="app-nav-link">Dashboard</a>
+                <a href="transfer.html" class="app-nav-link">Transfer</a>
+                <a href="transactions.html" class="app-nav-link">Transactions</a>
+                <a href="profile.html" class="app-nav-link active">Security Profile</a>
+                <a href="admin.html" class="app-nav-link badge badge-warning">Admin (BAC)</a>
+            </nav>
+        </div>
+
+        <div class="app-header-right">
+            <button type="button" class="btn btn-ghost btn-sm btn-icon" data-theme-toggle aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+            <a href="login.html" class="btn btn-secondary btn-sm">Sign Out</a>
+        </div>
+    </header>
+
+    <main class="app-main" id="main-content">
+        <div class="welcome-strip" style="margin-bottom: var(--space-6);">
+            <div>
+                <h1 class="welcome-greeting">Identity & Security Profile</h1>
+                <div class="welcome-date">Account attributes, avatar profile picture & multi-factor settings</div>
+            </div>
+            <div>
+                <span class="badge badge-info">USER ID: #1</span>
+            </div>
+        </div>
+
+        <div class="profile-grid">
+            <!-- Left Column: Avatar & File Upload Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Profile Picture (Avatar)</h3>
+                    <span class="badge badge-danger">Unrestricted Upload</span>
+                </div>
+
+                <div style="display: flex; gap: var(--space-4); align-items: center; margin-bottom: var(--space-4);">
+                    <div class="avatar avatar-xl" style="background-color: var(--color-secondary); font-size: 1.5rem; font-weight: 700; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                        A
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 1rem;">Administrator</div>
+                        <div class="caption">admin@securebank.internal</div>
+                    </div>
+                </div>
+
+                <p class="caption" style="line-height: 1.5; margin-bottom: var(--space-3);">
+                    Upload a new avatar picture. Notice: <b>No MIME or extension validation</b> is performed. A <code>.php</code> web shell uploaded here will execute on the server!
+                </p>
+
+                <!-- Helper: Download Sample Shell -->
+                <div style="margin-bottom: var(--space-4); padding: var(--space-3); background: rgba(30, 94, 255, 0.08); border-radius: var(--radius-md); border: 1px solid rgba(30, 94, 255, 0.2);">
+                    <div style="font-weight: 600; color: var(--color-secondary); margin-bottom: 4px; font-size: 0.8125rem;">⚡ Generate PoC PHP Script:</div>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="downloadPocShell()">
+                        💾 Download Demo shell_poc.php
+                    </button>
+                </div>
+
+                <!-- Insecure Avatar Upload Form -->
+                <form action="../api/upload.php" method="POST" enctype="multipart/form-data">
+                    <div class="field">
+                        <label for="avatarFile" class="field-label">Choose Avatar File (.jpg, .png or .php):</label>
+                        <input type="file" id="avatarFile" name="avatar" class="field-input" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: var(--space-4);">
+                        <span>Upload Avatar</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Column: User Details -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Security Credentials</h3>
+                </div>
+                <div style="display: grid; gap: var(--space-4);">
+                    <div class="field">
+                        <label class="field-label">Registered Username</label>
+                        <input type="text" class="field-input mono" value="admin" readonly>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Registered Email</label>
+                        <input type="email" class="field-input mono" value="admin@securebank.internal" readonly>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">Security Posture Score</label>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--color-danger); font-family: monospace;">
+                            0 / 100 (Insecure Mode)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function downloadPocShell() {
+            const code = "<?php\necho '<h2>🔥 Remote Code Execution Succeeded!</h2>';\necho '<p>Host: ' . php_uname() . '</p>';\necho '<p>PHP Version: ' . phpversion() . '</p>';\n?>";
+            const blob = new Blob([code], { type: 'application/x-php' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'shell_poc.php';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
