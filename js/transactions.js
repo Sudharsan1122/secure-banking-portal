@@ -285,5 +285,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 3500);
     }
 
+    // Pre-populate search input if ?q= or ?search= present in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('q') || urlParams.get('search');
+    if (initialQuery && searchInput) {
+        searchInput.value = initialQuery;
+    }
+
     loadTransactions();
 });

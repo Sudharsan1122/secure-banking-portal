@@ -122,7 +122,11 @@ if (isset($_SERVER['HTTP_LAST_EVENT_ID']) && is_numeric($_SERVER['HTTP_LAST_EVEN
 
 $startTime = time();
 $lastHeartbeat = time();
-$maxDuration = 300; // Auto-close after 5 minutes to let EventSource reconnect and recycle connections
+// Under PHP built-in web server (cli-server), avoid long thread blocking by cycling connection
+$maxDuration = (PHP_SAPI === 'cli-server') ? 2 : 300;
+
+// Set reconnection retry interval for EventSource client
+echo "retry: 2000\n";
 
 // Send initial connection ACK
 echo "event: connected\n";

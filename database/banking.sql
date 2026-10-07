@@ -387,11 +387,16 @@ INSERT INTO `security_logs` (`id`, `user_id`, `event_type`, `severity`, `ip_addr
 
 -- Seed standard SIEM detection rules
 INSERT INTO `alert_rules` (`name`, `description`, `enabled`, `threshold`, `window_seconds`, `event_type`, `severity`) VALUES
-('CSRF_BURST', 'Multiple CSRF token mismatches within 10 minutes indicating cross-site attack attempt', 1, 5, 600, 'CSRF_FAILURE', 'high'),
-('BRUTE_FORCE_IP', 'Concentrated failed logins from single IP address within 10 minutes', 1, 20, 600, 'LOGIN_FAILED', 'high'),
-('LARGE_TRANSFER', 'High-value funds transfer exceeding risk threshold (>= ₹1,00,000 / $10,000)', 1, 1, 60, 'TRANSFER_SUCCESS', 'high'),
-('SQLI_SPIKE', 'Repeated SQL injection payload signatures intercepted within 5 minutes', 1, 3, 300, 'SQLI_BLOCKED', 'critical'),
-('TRAVERSAL_SPIKE', 'Repeated directory traversal path manipulations detected within 5 minutes', 1, 3, 300, 'DIRECTORY_TRAVERSAL', 'high'),
+('CSRF_BURST', 'CSRF token validation failure on state-changing transaction endpoint', 1, 1, 300, 'CSRF_FAILURE', 'high'),
+('BRUTE_FORCE_IP', 'Concentrated failed logins from single IP address within sliding window', 1, 5, 300, 'LOGIN_FAILED', 'high'),
+('LARGE_TRANSFER', 'High-value funds transfer exceeding risk threshold (>= $10,000)', 1, 1, 60, 'TRANSFER_SUCCESS', 'high'),
+('SQLI_SPIKE', 'SQL injection payload signature intercepted by security validation firewall', 1, 1, 300, 'SQLI_BLOCKED', 'critical'),
+('TRAVERSAL_SPIKE', 'Directory path traversal sequence detected on download statement endpoint', 1, 1, 300, 'DIRECTORY_TRAVERSAL', 'high'),
 ('CHAIN_TAMPER', 'Cryptographic audit log integrity validation failure or hash chain corruption', 1, 1, 60, 'HASH_CHAIN_TAMPERED', 'critical'),
-('ADMIN_OFF_HOURS', 'Privileged administrative diagnostic or configuration action between 00:00 and 06:00', 1, 1, 60, 'OFF_HOURS_ADMIN_ACTION', 'medium');
+('ADMIN_OFF_HOURS', 'Privileged administrative diagnostic or configuration action during off-hours', 1, 1, 60, 'OFF_HOURS_ADMIN_ACTION', 'medium'),
+('XSS_ATTACK', 'Cross-Site Scripting signature detected in user input parameters or remarks', 1, 1, 300, 'XSS_BLOCKED', 'high'),
+('IDOR_VIOLATION', 'Insecure direct object reference or unauthorized resource inspection attempt', 1, 1, 300, 'ACCESS_VIOLATION', 'high'),
+('BAC_VIOLATION', 'Privileged administrative endpoint accessed without required authorization', 1, 1, 300, 'UNAUTHORIZED_ACCESS', 'critical'),
+('MALICIOUS_UPLOAD', 'Disguised executable or prohibited file upload intercepted by magic-byte guard', 1, 1, 300, 'MALICIOUS_UPLOAD_BLOCKED', 'high'),
+('RATE_LIMIT_EXCEEDED', 'Endpoint rate limit exceeded (HTTP 429 Too Many Requests)', 1, 1, 300, 'RATE_LIMIT_EXCEEDED', 'medium');
 

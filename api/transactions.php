@@ -21,7 +21,7 @@ require_once __DIR__ . '/../config/database.php';
 $currentUser = require_auth();
 $userId = $currentUser['id'];
 
-$search   = trim($_GET['search'] ?? '');
+$search   = trim($_GET['search'] ?? $_GET['q'] ?? '');
 $category = trim($_GET['category'] ?? '');
 $limit    = min(100, max(1, (int)($_GET['limit'] ?? 50)));
 
@@ -31,6 +31,19 @@ detect_xss_payload($search, $userId);
 
 try {
     $pdo = get_db();
+
+    $requestedTxnId = isset($_GET['id']) && is_numeric($_GET['id']) ? (int)$_GET['id'] : null;
+    if ($requestedTxnId !== null && $requestedTxnId > 0) {
+        $chkStmt = $pdo->prepare("SELECT sender_id, receiver_id FROM transactions WHERE id = :id");
+        $chkStmt->execute([':id' => $requestedTxnId]);
+        $txnRow = $chkStmt->fetch(PDO::FETCH_ASSOC);
+        if ($txnRow && (int)$txnRow['sender_id'] !== $userId && (int)$txnRow['receiver_id'] !== $userId) {
+            log_security_event($userId, 'ACCESS_VIOLATION', 'BLOCKED', "IDOR attempt: User $userId attempted to inspect transaction #$requestedTxnId belonging to another party", 'high');
+            http_response_code(403);
+            echo json_encode(['status' => 'error', 'message' => 'Access Denied: You do not have permission to inspect this transaction.']);
+            exit;
+        }
+    }
 
     $sql = "SELECT t.id, t.sender_id, t.receiver_id, t.amount, t.remark, t.category, t.status, t.created_at,
                    s.name AS sender_name, s.username AS sender_username,

@@ -20,6 +20,20 @@ $userId = $currentUser['id'];
 try {
     $pdo = get_db();
 
+    $requestedAccountId = isset($_GET['account_id']) && is_numeric($_GET['account_id']) ? (int)$_GET['account_id'] : null;
+    if ($requestedAccountId !== null && $requestedAccountId > 0) {
+        $chkStmt = $pdo->prepare("SELECT user_id FROM accounts WHERE id = :id");
+        $chkStmt->execute([':id' => $requestedAccountId]);
+        $ownerId = $chkStmt->fetchColumn();
+        if ($ownerId !== false && (int)$ownerId !== $userId) {
+            require_once __DIR__ . '/../security/logger.php';
+            log_security_event($userId, 'ACCESS_VIOLATION', 'BLOCKED', "IDOR attempt: User $userId tried to access account #$requestedAccountId owned by User $ownerId", 'high');
+            http_response_code(403);
+            echo json_encode(['status' => 'error', 'message' => 'Access Denied: You do not own this account.']);
+            exit;
+        }
+    }
+
     $stmt = $pdo->prepare(
         "SELECT id, account_number, balance, currency, type, nickname, interest_rate, created_at 
          FROM accounts 

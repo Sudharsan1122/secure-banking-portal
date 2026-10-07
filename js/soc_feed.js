@@ -245,6 +245,19 @@
 
     // Initialize on DOM load
     document.addEventListener('DOMContentLoaded', function () {
+        const existingRows = feedContainer?.querySelectorAll('.feed-event-row');
+        if (existingRows && existingRows.length > 0) {
+            existingRows.forEach(r => {
+                const id = parseInt(r.id.replace('event-row-', ''));
+                if (!isNaN(id) && id > lastEventId) {
+                    lastEventId = id;
+                }
+            });
+            if (feedCountBadge) {
+                feedCountBadge.textContent = `${existingRows.length} Events`;
+            }
+        }
+
         if (window.EventSource) {
             initSSE();
         } else {

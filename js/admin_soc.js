@@ -124,6 +124,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
+                // Update Active Alerts Container
+                const alertsContainer = document.getElementById('alertsPanelContainer');
+                if (alertsContainer && Array.isArray(data.alerts)) {
+                    alertsContainer.textContent = '';
+                    if (data.alerts.length === 0) {
+                        const p = document.createElement('p');
+                        p.style.color = '#64748B';
+                        p.style.fontSize = '0.85rem';
+                        p.textContent = 'No active alert incidents logged.';
+                        alertsContainer.appendChild(p);
+                    } else {
+                        data.alerts.forEach(a => {
+                            const row = document.createElement('div');
+                            row.style.cssText = 'border-bottom: 1px solid #E2E8F0; padding: 0.5rem 0; display: flex; justify-content: space-between; align-items: center;';
+
+                            const leftDiv = document.createElement('div');
+                            const topDiv = document.createElement('div');
+                            topDiv.style.cssText = 'display: flex; gap: 0.5rem; align-items: center;';
+
+                            const nameStrong = document.createElement('strong');
+                            nameStrong.style.cssText = 'font-size: 0.85rem; color: #0F172A;';
+                            nameStrong.textContent = a.rule_name;
+
+                            const pill = document.createElement('span');
+                            pill.className = `severity-pill pill-${a.severity}`;
+                            pill.textContent = (a.severity || 'low').toUpperCase();
+
+                            topDiv.appendChild(nameStrong);
+                            topDiv.appendChild(pill);
+
+                            const timeDiv = document.createElement('div');
+                            timeDiv.style.cssText = 'font-size: 0.75rem; color: #64748B; margin-top: 2px;';
+                            timeDiv.textContent = a.triggered_at;
+
+                            leftDiv.appendChild(topDiv);
+                            leftDiv.appendChild(timeDiv);
+
+                            const rightDiv = document.createElement('div');
+                            if (a.acknowledged == 1) {
+                                const ackSpan = document.createElement('span');
+                                ackSpan.style.cssText = 'font-size: 0.75rem; color: #1E5EFF; font-weight: 600;';
+                                ackSpan.textContent = '✓ Acknowledged';
+                                rightDiv.appendChild(ackSpan);
+                            } else {
+                                const ackBtn = document.createElement('button');
+                                ackBtn.className = 'btn btn-outline btn-sm btn-ack-alert';
+                                ackBtn.setAttribute('data-id', a.id);
+                                ackBtn.style.padding = '2px 8px';
+                                ackBtn.style.fontSize = '0.75rem';
+                                ackBtn.textContent = 'Acknowledge';
+                                rightDiv.appendChild(ackBtn);
+                            }
+
+                            row.appendChild(leftDiv);
+                            row.appendChild(rightDiv);
+                            alertsContainer.appendChild(row);
+                        });
+                    }
+                }
+
                 // Update timestamp
                 const tsEl = document.getElementById('lastPolledTimestamp');
                 if (tsEl) tsEl.textContent = `Panels updated at ${data.time}`;

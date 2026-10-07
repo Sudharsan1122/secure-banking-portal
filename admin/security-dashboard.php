@@ -84,6 +84,16 @@ $unackCount = get_unacknowledged_alert_count();
 $chainStatus = verify_log_chain();
 $csrfToken = get_csrf_token();
 $cspNonce = get_csp_nonce();
+
+// Fetch initial security logs for immediate display
+$stmtRecentLogs = $pdo->query("
+    SELECT sl.id, sl.user_id, sl.event_type, sl.severity, sl.ip_address, sl.request, sl.status, sl.timestamp, u.username
+    FROM security_logs sl
+    LEFT JOIN users u ON sl.user_id = u.id
+    ORDER BY sl.id DESC
+    LIMIT 20
+");
+$recentLogs = $stmtRecentLogs->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -328,7 +338,23 @@ $cspNonce = get_csp_nonce();
 
                 <!-- Feed Container (Managed by /js/soc_feed.js) -->
                 <div class="feed-container" id="soc-feed-container">
-                    <p style="color: #64748B; font-size: 0.85rem; text-align: center; margin-top: 2rem;">Connecting to real-time SSE event pipeline...</p>
+                    <?php if (empty($recentLogs)): ?>
+                        <p style="color: #64748B; font-size: 0.85rem; text-align: center; margin-top: 2rem;">Connecting to real-time SSE event pipeline...</p>
+                    <?php else: ?>
+                        <?php foreach ($recentLogs as $log): ?>
+                            <div id="event-row-<?= (int)$log['id'] ?>" class="feed-event-row severity-<?= htmlspecialchars($log['severity']) ?>" data-severity="<?= htmlspecialchars($log['severity']) ?>">
+                                <div class="event-header">
+                                    <span class="event-time"><?= htmlspecialchars($log['timestamp']) ?></span>
+                                    <span class="event-type"><?= htmlspecialchars($log['event_type']) ?></span>
+                                    <span class="severity-pill pill-<?= htmlspecialchars($log['severity']) ?>"><?= strtoupper(htmlspecialchars($log['severity'])) ?></span>
+                                </div>
+                                <div class="event-body">
+                                    <span class="event-meta">[IP: <?= htmlspecialchars($log['ip_address']) ?>] [User: <?= htmlspecialchars($log['username'] ?? 'System') ?>] [Status: <?= htmlspecialchars($log['status']) ?>]</span>
+                                    <p class="event-details"><?= htmlspecialchars($log['request'] ?: 'No additional payload context.') ?></p>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
 
