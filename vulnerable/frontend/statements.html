@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Insecure Statement Download (Test Path Traversal here)</h2>
+    <form action="../api/download.php" method="GET">
+        Filename: <input type="text" name="file" value="../../../../Windows/win.ini"><br><br>
+        <button type="submit">Download</button>
+    </form>
+</body>
+</html>

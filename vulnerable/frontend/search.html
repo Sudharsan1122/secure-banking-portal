@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Insecure Search (Test Reflected XSS & SQLi here)</h2>
+    <form action="../api/search.php" method="GET">
+        Search Remark: <input type="text" name="q" value="<script>alert('Reflected XSS')</script>"><br><br>
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

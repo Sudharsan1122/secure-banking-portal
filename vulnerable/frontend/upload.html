@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Insecure File Upload (Test RCE here)</h2>
+    <form action="../api/upload.php" method="POST" enctype="multipart/form-data">
+        Select image to upload (Try a .php file!):
+        <input type="file" name="avatar" id="avatar"><br><br>
+        <button type="submit" name="submit">Upload File</button>
+    </form>
+</body>
+</html>

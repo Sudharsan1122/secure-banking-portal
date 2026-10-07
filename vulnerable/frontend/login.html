@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Insecure Login (Test SQLi here)</h2>
+    <form action="../api/login.php" method="POST">
+        Username: <input type="text" name="username" value="admin' OR '1'='1' -- "><br><br>
+        Password: <input type="password" name="password"><br><br>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>

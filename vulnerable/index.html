@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Insecure Bank - Vulnerable Training Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #ffebee; color: #b71c1c; padding: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { border-bottom: 2px solid #b71c1c; padding-bottom: 10px; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 10px 0; padding: 15px; background: #ffcdd2; border-left: 4px solid #b71c1c; border-radius: 4px; }
+        a { color: #b71c1c; text-decoration: none; font-weight: bold; font-size: 1.1em; display: block; }
+        a:hover { text-decoration: underline; }
+        .badge { display: inline-block; padding: 3px 8px; background: #b71c1c; color: white; border-radius: 12px; font-size: 0.8em; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Insecure Bank (Vulnerable Training Portal)</h1>
+        <p>This is the intentionally vulnerable version of the Secure Banking Portal. <b>Do not expose this to the internet.</b> It contains 12 active vulnerabilities for demonstration and training purposes.</p>
+        
+        <h2>Attack Vectors Sandbox</h2>
+        <ul>
+            <li><a href="frontend/login.html">1. Login Bypass <span class="badge">SQLi</span></a> (Try username: <code>admin' OR '1'='1' -- </code>)</li>
+            <li><a href="frontend/dashboard.html">2. Account IDOR <span class="badge">Broken Access Control</span></a> (Change <code>?user_id=1</code> in URL)</li>
+            <li><a href="frontend/transfer.html">3. Money Transfer <span class="badge">CSRF</span> <span class="badge">Clickjacking</span></a> (No CSRF tokens, no X-Frame-Options)</li>
+            <li><a href="frontend/search.html">4. Transaction Search <span class="badge">SQLi</span> <span class="badge">Reflected XSS</span></a> (Try search: <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code>)</li>
+            <li><a href="frontend/statements.html">5. Statement Download <span class="badge">Path Traversal</span></a> (Try download: <code>../../../../windows/win.ini</code>)</li>
+            <li><a href="frontend/upload.html">6. Avatar Upload <span class="badge">File Upload</span></a> (Upload a <code>.php</code> reverse shell file)</li>
+            <li><a href="api/admin.php">7. Admin Dashboard <span class="badge">Broken Access Control</span></a> (Directly accessible without admin role)</li>
+        </ul>
+    </div>
+</body>
+</html>

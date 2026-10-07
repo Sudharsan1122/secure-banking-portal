@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- ⚠️ VULNERABILITY 8: CLICKJACKING (Missing X-Frame-Options) -->
+</head>
+<body>
+    <h2>Insecure Transfer (Test CSRF & Clickjacking here)</h2>
+    <form action="../api/transfer.php" method="POST">
+        Receiver ID: <input type="text" name="receiver" value="2"><br><br>
+        Amount: <input type="text" name="amount" value="1000"><br><br>
+        Remark: <input type="text" name="remark" value="<script>alert('Stored XSS')</script>"><br><br>
+        <!-- No CSRF Token! -->
+        <button type="submit">Transfer Money</button>
+    </form>
+</body>
+</html>

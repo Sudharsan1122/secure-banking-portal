@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Insecure Dashboard (Test IDOR & DOM XSS here)</h2>
+    
+    <!-- ⚠️ VULNERABILITY 9: DOM XSS -->
+    <div id="greeting"></div>
+    <script>
+        // INSECURE DOM XSS: Reading from URL hash and setting innerHTML directly
+        let hash = decodeURIComponent(window.location.hash.substring(1));
+        if(hash) {
+            document.getElementById('greeting').innerHTML = "Welcome, " + hash;
+        } else {
+            document.getElementById('greeting').innerHTML = "Welcome, User";
+        }
+    </script>
+    
+    <p>Try appending <code>#&lt;img src=x onerror=alert('DOM_XSS')&gt;</code> to the URL.</p>
+
+    <hr>
+    <h3>Your Accounts (IDOR Test)</h3>
+    <p>Try changing <code>?user_id=1</code> in the URL to <code>?user_id=2</code> to see someone else's accounts.</p>
+    <div id="accounts"></div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id') || 1;
+        fetch('../api/get_accounts.php?user_id=' + userId)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('accounts').innerText = JSON.stringify(data, null, 2);
+            });
+    </script>
+</body>
+</html>
