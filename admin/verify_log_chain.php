@@ -103,7 +103,8 @@ if ($isJson) {
     if ($result['verified']) {
         http_response_code(200);
         echo json_encode([
-            'status'         => 'success',
+            'status'         => 'valid',
+            'success'        => true,
             'chain_status'   => 'VERIFIED_INTACT',
             'total_records'  => $result['total_records'],
             'latest_hash'    => $result['latest_hash'] ?? 'N/A',

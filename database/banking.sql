@@ -6,9 +6,14 @@
 -- Charset: utf8mb4 / Collation: utf8mb4_unicode_ci
 -- ===============================================================
 
+-- Create databases if not existing
+CREATE DATABASE IF NOT EXISTS `banking` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS `secure_banking` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `secure_banking`;
+USE `banking`;
 
+DROP TABLE IF EXISTS `api_tokens`;
+DROP TABLE IF EXISTS `system_settings`;
+DROP TABLE IF EXISTS `audit_chain_checkpoints`;
 DROP TABLE IF EXISTS `transaction_reviews`;
 DROP TABLE IF EXISTS `user_devices`;
 DROP TABLE IF EXISTS `notifications`;
@@ -35,7 +40,7 @@ CREATE TABLE `users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(100) NOT NULL,
     `email` VARCHAR(150) NOT NULL UNIQUE,
-    `phone` VARCHAR(20) NOT NULL,
+    `phone` VARCHAR(20) NOT NULL DEFAULT '',
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
     `balance` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
@@ -89,6 +94,7 @@ CREATE TABLE `beneficiaries` (
     `verified` BOOLEAN NOT NULL DEFAULT FALSE,
     `verification_code_hash` VARCHAR(255) NULL,
     `verification_expires_at` TIMESTAMP NULL,
+    `verification_attempts` INT NOT NULL DEFAULT 0,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `fk_beneficiaries_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
     INDEX `idx_user_beneficiary` (`user_id`),
@@ -103,20 +109,21 @@ CREATE TABLE `categories` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(32) UNIQUE NOT NULL,
     `icon` VARCHAR(32) DEFAULT '📁',
+    `color` VARCHAR(32) DEFAULT '#6B7280',
     `is_system` BOOLEAN DEFAULT TRUE,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `categories` (`name`, `icon`, `is_system`) VALUES
-('Food', '🍔', TRUE),
-('Bills', '📄', TRUE),
-('Salary', '💼', TRUE),
-('Transfer', '💸', TRUE),
-('Shopping', '🛍️', TRUE),
-('Transport', '🚗', TRUE),
-('Entertainment', '🎬', TRUE),
-('Utilities', '💡', TRUE),
-('Other', '📦', TRUE);
+INSERT INTO `categories` (`name`, `icon`, `color`, `is_system`) VALUES
+('Food', '🍔', '#EF4444', TRUE),
+('Bills', '📄', '#F59E0B', TRUE),
+('Salary', '💼', '#10B981', TRUE),
+('Transfer', '💸', '#3B82F6', TRUE),
+('Shopping', '🛍️', '#8B5CF6', TRUE),
+('Transport', '🚗', '#EC4899', TRUE),
+('Entertainment', '🎬', '#6366F1', TRUE),
+('Utilities', '💡', '#14B8A6', TRUE),
+('Other', '📦', '#6B7280', TRUE);
 
 -- ---------------------------------------------------------------
 -- 5. Table: transactions
@@ -195,6 +202,7 @@ CREATE TABLE `user_devices` (
     `first_seen` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `last_seen` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `trusted` BOOLEAN DEFAULT FALSE,
+    `is_revoked` BOOLEAN DEFAULT FALSE,
     CONSTRAINT `fk_device_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
     UNIQUE KEY `uk_user_fp` (`user_id`, `fingerprint`),
     INDEX `idx_user_device` (`user_id`)
@@ -351,6 +359,37 @@ CREATE TABLE `alert_rules` (
 -- ---------------------------------------------------------------
 -- DROP TABLE cleanup block at top of file synchronization
 -- ---------------------------------------------------------------
+
+-- ---------------------------------------------------------------
+-- 18. Table: audit_chain_checkpoints
+-- ---------------------------------------------------------------
+CREATE TABLE `audit_chain_checkpoints` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `block_height` INT NOT NULL,
+    `checkpoint_hash` VARCHAR(64) NOT NULL,
+    `verified_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------
+-- 19. Table: system_settings
+-- ---------------------------------------------------------------
+CREATE TABLE `system_settings` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `setting_key` VARCHAR(64) UNIQUE NOT NULL,
+    `setting_val` TEXT NOT NULL,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------
+-- 20. Table: api_tokens
+-- ---------------------------------------------------------------
+CREATE TABLE `api_tokens` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `token_hash` VARCHAR(64) UNIQUE NOT NULL,
+    `name` VARCHAR(100) NOT NULL,
+    `role` VARCHAR(32) NOT NULL DEFAULT 'service',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ===============================================================
 -- SEED DATA

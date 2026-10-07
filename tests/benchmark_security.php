@@ -17,7 +17,7 @@ require_once __DIR__ . '/../security/csrf.php';
 $results = [];
 
 // 1. Bcrypt Cost Factor Benchmark
-$password = 'SecureP@ssw0rd!2026';
+$benchPassword = 'SecureP@ssw0rd!2026';
 $costs = [10, 11, 12, 13];
 $bcryptResults = [];
 
@@ -26,7 +26,7 @@ foreach ($costs as $cost) {
     $times = [];
     for ($i = 0; $i < $iterations; $i++) {
         $start = microtime(true);
-        $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => $cost]);
+        $hash = password_hash($benchPassword, PASSWORD_BCRYPT, ['cost' => $cost]);
         $end = microtime(true);
         $times[] = ($end - $start) * 1000; // in milliseconds
     }

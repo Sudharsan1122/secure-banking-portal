@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    container_name: sbp-web
+    ports: ['8080:80']
+    env_file: [.env]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [sbp-net]
+    restart: unless-stopped
+
+  db:
+    image: mysql:8
+    container_name: sbp-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+    volumes:
+      - ./database/banking.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - sbp-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [sbp-net]
+    restart: unless-stopped
+
+networks:
+  sbp-net:
+    driver: bridge
+
+volumes:
+  sbp-data:

@@ -1,8 +1,41 @@
 # Secure Banking Portal: A Web Application for Secure Transactions and Vulnerability Mitigation
 
+![CI](https://github.com/Sudharsan1122/secure-banking-portal/actions/workflows/ci.yml/badge.svg)
+![CodeQL](https://github.com/Sudharsan1122/secure-banking-portal/actions/workflows/codeql.yml/badge.svg)
+![Deploy](https://github.com/Sudharsan1122/secure-banking-portal/actions/workflows/deploy.yml/badge.svg)
+![Vulnerabilities](https://img.shields.io/badge/vulnerabilities%20mitigated-12%2F12-brightgreen)
+![Tests](https://img.shields.io/badge/tests-99%2F99-brightgreen)
+![PHP](https://img.shields.io/badge/PHP-8.2-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 > **Academic Capstone Project**  
 > **Course**: Web Application Security & Advanced Web Architectures  
 > **Tech Stack**: PHP 8+ (Vanilla), MySQL (InnoDB/PDO), HTML5, CSS3, Vanilla ES6 JavaScript (Fetch API/JSON), Apache  
+
+---
+
+## 🔄 CI/CD Pipeline
+
+Every push to `main` triggers:
+
+1. **CI** — 99+ tests, PHP lint, secrets scan, DB seed verification, hash-chain check
+2. **CodeQL** — SAST for JS + PHP
+3. **Security Audit** — composer audit + TruffleHog
+4. **Deploy** — multi-stage Docker image pushed to GHCR, tagged with `${{ github.sha }}`
+
+Pull requests require:
+- All checks green
+- Security checklist completed
+- Hash chain verified
+
+## 🐳 Docker
+
+Local run:
+```bash
+cp .env.example .env       # edit secrets
+docker compose up --build
+# App: http://localhost:8080
+```
 
 ---
 

@@ -1,0 +1,19 @@
+{
+  "name": "sudharsan1122/secure-banking-portal",
+  "description": "Secure Banking Portal - Web Application for Secure Transactions and Vulnerability Mitigation",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sudharsan1122",
+      "homepage": "https://github.com/Sudharsan1122"
+    }
+  ],
+  "require": {
+    "php": "^8.2"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {}
+  }
+}

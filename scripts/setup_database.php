@@ -16,11 +16,16 @@ try {
     $pdo->exec($sql);
     echo "Imported database/banking.sql successfully!\n";
 
+    // Also populate secure_banking for local dev compatibility
+    $sqlSecure = str_replace("USE `banking`;", "USE `secure_banking`;", $sql);
+    $pdo->exec($sqlSecure);
+    echo "Populated secure_banking database as well!\n";
+
     // Verify tables
-    $pdo->exec("USE secure_banking");
+    $pdo->exec("USE banking");
     $stmt = $pdo->query("SHOW TABLES");
     $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    echo "Tables in secure_banking: " . implode(', ', $tables) . "\n";
+    echo "Tables in banking: " . count($tables) . " (" . implode(', ', $tables) . ")\n";
 
     // Verify user count
     $userCount = $pdo->query("SELECT count(*) FROM users")->fetchColumn();
